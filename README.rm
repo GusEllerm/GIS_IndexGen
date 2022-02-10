@@ -1,0 +1,9 @@
+
+Google earth engine containes three datatype sets  
+    - Features -> geometric objects with a list of properties
+    - Images -> like features, but may include many bands
+    - Collections -> groups of features and images. 
+
+MODIS exmaple
+Using MODIS data to calculate change in Land Surface Temperature (LST) over time. 
+

@@ -1,0 +1,8 @@
+# Ignore large tif outputs 
+*.tif
+
+# Ignore raw data files
+data/*.SAFE
+
+# Ignore key for API
+API/

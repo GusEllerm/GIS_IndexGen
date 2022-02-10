@@ -1,0 +1,7 @@
+SciPy
+Python 2.7 or 3
+Rasterio
+Matplotlib
+Retrying
+Requests
+PlanetAPIkey
