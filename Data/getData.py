@@ -2,7 +2,7 @@ from sentinelsat import SentinelAPI, read_geojson, geojson_to_wkt
 from datetime import date
 
 # Connect to API
-api = SentinelAPI('ael56', 'hUwnir-gihki3-xampan', 'https://apihub.copernicus.eu/apihub')
+api = SentinelAPI(None, None, 'https://apihub.copernicus.eu/apihub')
 
 footprint = geojson_to_wkt(read_geojson('Data/NZ.geojson'))
 
