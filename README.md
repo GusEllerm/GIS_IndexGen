@@ -1,3 +1,5 @@
+readme currently out of date
+
 # MODIS example
 
 ## Data source
