@@ -6,7 +6,7 @@ import os
 
 ## Image generation
 # NDVI
-def NDVI_tiff(nir, red, geotrans, projection):
+def NDVI_tiff(geotrans, projection):
 
     logging.info("Creating NDVI tiff")
 
@@ -39,7 +39,7 @@ def NDVI_tiff(nir, red, geotrans, projection):
     '"' + root_dir + "/Workflow outputs/Final outputs/Figures/NDVI_color.tif" + '"'
     ))
 
-def RECI_tiff(nir, red, geotrans, projection):
+def RECI_tiff(geotrans, projection):
 
     logging.info("Creating RECI tiff")
 
@@ -72,7 +72,7 @@ def RECI_tiff(nir, red, geotrans, projection):
     '"' + root_dir + "/Workflow outputs/Final outputs/Figures/RECI_color.tif" + '"'
     ))
 
-def GNDVI_tiff(nir, green, geotrans, projection):
+def GNDVI_tiff(geotrans, projection):
 
     logging.info("Creating GNDVI tiff")
     
