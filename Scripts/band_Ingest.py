@@ -1,8 +1,11 @@
 import glob
+import logging
 from osgeo import gdal 
 from file_handling import write_band_to_file
 
 def ingest_10m(root_dir, r10m_dir):
+
+    logging.info("Ingesting 10m bands")
 
     r10m_rel_dir = root_dir + r10m_dir
 
@@ -43,6 +46,8 @@ def ingest_10m(root_dir, r10m_dir):
     write_band_to_file('WVP_10m',WVP_10m_array, TCI_10m_link)
 
 def ingest_20m(root_dir, r20m_dir):
+
+    logging.info("Ingesting 20m bands")
 
     r20m_rel_dir = root_dir + r20m_dir
 
@@ -97,6 +102,8 @@ def ingest_20m(root_dir, r20m_dir):
     
 
 def ingest_60m(root_dir, r60m_dir):
+
+    logging.info("Ingesting 60m bands")
     
     r60m_rel_dir = root_dir + r60m_dir
 
