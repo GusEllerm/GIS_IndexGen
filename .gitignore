@@ -1,5 +1,6 @@
-# Ignore large tif outputs 
+# Ignore large tif and npz (compressed array) outputs 
 *.tif
+*.npz
 
 # Ignore raw data files
 data/*.SAFE

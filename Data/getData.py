@@ -1,4 +1,4 @@
-from sentinelsat import SentinelAPI, read_geojson, geojson_to_wkt
+from sentinelsat import SentinelAPI, read_geojson, geojson_to_wkt, data_request
 from datetime import date
 
 # Connect to API
