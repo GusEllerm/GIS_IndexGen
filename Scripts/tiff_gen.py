@@ -4,39 +4,34 @@ import os
 
 ## Image generation
 # NDVI
-def gen_NDVI(nir, red, link):
-    ndvi_result = ndvi(nir, red)
-    outfile_name = 'Workflow outputs/Figures/NDVI.tif'
+def gen_NDVI(nir, red, geotrans, projection):
+    # ndvi_result = ndvi(nir, red)
+    # outfile_name = 'Workflow outputs/Final outputs/Figures/NDVI.tif'
 
-    # Get pixels for hight and width
-    x_pixels = ndvi_result.shape[0]
-    y_pixels = ndvi_result.shape[1]
+    # # Get pixels for hight and width
+    # x_pixels = ndvi_result.shape[0]
+    # y_pixels = ndvi_result.shape[1]
 
-    # Set up GeoTIFF output
-    driver = gdal.GetDriverByName('GTiff')
+    # # Set up GeoTIFF output
+    # driver = gdal.GetDriverByName('GTiff')
 
-    # Create driver using filename, x & y pixels, # of bands and datatype
-    ndvi_data = driver.Create(outfile_name,x_pixels,y_pixels,1,gdal.GDT_Float32)
+    # # Create driver using filename, x & y pixels, # of bands and datatype
+    # ndvi_data = driver.Create(outfile_name,x_pixels,y_pixels,1,gdal.GDT_Float32)
 
-    # Set NDVI array as the 1 output raster band
-    ndvi_data.GetRasterBand(1).WriteArray(ndvi_result)
+    # # Set NDVI array as the 1 output raster band
+    # ndvi_data.GetRasterBand(1).WriteArray(ndvi_result)
 
-    # Set up coord reference system of the output GeoTIFF
-    geotrans = link.GetGeoTransform() #-> get input GeoTransform information
-    projection = link.GetProjection() #-> get projection information
-
-    # Set geotransform parameters and projection on the output tiff
-    ndvi_data.SetGeoTransform(geotrans)
-    ndvi_data.SetProjection(projection)
-    ndvi_data.FlushCache()
-    ndvi_data = None
-
+    # # Set geotransform parameters and projection on the output tiff
+    # ndvi_data.SetGeoTransform(geotrans)
+    # ndvi_data.SetProjection(projection)
+    # ndvi_data.FlushCache()
+    # ndvi_data = None
     
-
+    root_dir = os.path.abspath(os.curdir)
     os.system('gdaldem color-relief {} {} {}'.format(
-    '"'"/Users/eller/Library/CloudStorage/OneDrive-Personal/NDVI Prototype/Workflow outputs/Final outputs/Figures/NDVI.tif"'"',
-    '"'"/Users/eller/Library/CloudStorage/OneDrive-Personal/NDVI Prototype/Scripts/col.txt"'"',
-    '"'"/Users/eller/Library/CloudStorage/OneDrive-Personal/NDVI Prototype/Workflow outputs/Final outputs/Figures/NDVI_color.tif"'"'
+    '"' + root_dir + "/Workflow outputs/Final outputs/Figures/NDVI.tif" + '"',
+    '"' + root_dir + "/Scripts/Sup data/col.txt" + '"',
+    '"' + root_dir + "/Workflow outputs/Final outputs/Figures/NDVI_color.tif" + '"'
     ))
 
     # print("#####################")
@@ -45,9 +40,9 @@ def gen_NDVI(nir, red, link):
     # print("#####################")
 
 
-def gen_RECI(nir, red, link):
+def gen_RECI(nir, red, geotrans, projection):
     reci_result = reci(nir, red)
-    outfile_name = 'Workflow outputs/Figures/RECI.tif'
+    outfile_name = 'Workflow outputs/Final outputs/Figures/RECI.tif'
 
     # Get pixels for height and width
     x_pixels = reci_result.shape[0]
@@ -62,25 +57,22 @@ def gen_RECI(nir, red, link):
     # Set RECI array as teh 1 output raster band
     reci_data.GetRasterBand(1).WriteArray(reci_result)
 
-    # Set yp coord reference system of the output GeoTIFF
-    geotrans = link.GetGeoTransform() #-> get input GeoTransform information
-    projection = link.GetProjection() #-> get projection information
-
     # Set geotransform parameters and projection on the output tiff
     reci_data.SetGeoTransform(geotrans)
     reci_data.SetProjection(projection)
     reci_data.FlushCache()
     reci_data = None
 
+    root_dir = os.path.abspath(os.curdir)
     os.system('gdaldem color-relief {} {} {}'.format(
-    '"'"/Users/eller/Library/CloudStorage/OneDrive-Personal/NDVI Prototype/Workflow outputs/Final outputs/Figures/RECI.tif"'"',
-    '"'"/Users/eller/Library/CloudStorage/OneDrive-Personal/NDVI Prototype/Scripts/col.txt"'"',
-    '"'"/Users/eller/Library/CloudStorage/OneDrive-Personal/NDVI Prototype/Workflow outputs/Final outputs/Figures/RECI_color.tif"'"'
+    '"' + root_dir + "/Workflow outputs/Final outputs/Figures/RECI.tif" + '"',
+    '"' + root_dir + "/Scripts/Sup data/col.txt" + '"',
+    '"' + root_dir + "/Workflow outputs/Final outputs/Figures/RECI_color.tif" + '"'
     ))
 
-def get_GNDVI(nir, green, link):
+def get_GNDVI(nir, green, geotrans, projection):
     gndvi_result = gndvi(nir, green)
-    outfile_name = 'Workflow outputs/Figures/GNDVI.tif'
+    outfile_name = 'Workflow outputs/Final outputs/Figures/GNDVI.tif'
 
     # Get pixels for height and width
     x_pixels = gndvi_result.shape[0]
@@ -95,18 +87,15 @@ def get_GNDVI(nir, green, link):
     # Set RECI array as teh 1 output raster band
     gndvi_data.GetRasterBand(1).WriteArray(gndvi_result)
 
-    # Set yp coord reference system of the output GeoTIFF
-    geotrans = link.GetGeoTransform() #-> get input GeoTransform information
-    projection = link.GetProjection() #-> get projection information
-
     # Set geotransform parameters and projection on the output tiff
     gndvi_data.SetGeoTransform(geotrans)
     gndvi_data.SetProjection(projection)
     gndvi_data.FlushCache()
     gndvi_data = None
 
+    root_dir = os.path.abspath(os.curdir)
     os.system('gdaldem color-relief {} {} {}'.format(
-    '"'"/Users/eller/Library/CloudStorage/OneDrive-Personal/NDVI Prototype/Workflow outputs/Final outputs/Figures/GNDVI.tif"'"',
-    '"'"/Users/eller/Library/CloudStorage/OneDrive-Personal/NDVI Prototype/Scripts/col.txt"'"',
-    '"'"/Users/eller/Library/CloudStorage/OneDrive-Personal/NDVI Prototype/Workflow outputs/Final outputs/Figures/GNDVI_color.tif"'"'
+    '"' + root_dir + "/Workflow outputs/Final outputs/Figures/GNDVI.tif" + '"',
+    '"' + root_dir + "/Scripts/Sup data/col.txt" + '"',
+    '"' + root_dir + "/Workflow outputs/Final outputs/Figures/GNDVI_color.tif" + '"'
     ))
