@@ -31,9 +31,9 @@ def main():
     colour = 'Scripts/Sup data/col.txt' 
         
     # Run the ingestion on different resolutions
-    ingest_10m(data_dir, r10m_dir)
-    ingest_20m(data_dir, r20m_dir)
-    ingest_60m(data_dir, r60m_dir)
+    # ingest_10m(data_dir, r10m_dir)
+    # ingest_20m(data_dir, r20m_dir)
+    # ingest_60m(data_dir, r60m_dir)
 
     ## Example index calculation
     # First, we need to extract the stored info from the ingestion 
@@ -42,13 +42,13 @@ def main():
     B03_20m = read_band_from_file('B03_20m')
 
     # First we caluclate the index matrix
-    ndvi(B8A_20m[0], B04_20m[0])
-    reci(B8A_20m[0], B04_20m[0])
-    gndvi(B8A_20m[0], B03_20m[0])
+    # ndvi(B8A_20m[0], B04_20m[0])
+    # reci(B8A_20m[0], B04_20m[0])
+    # gndvi(B8A_20m[0], B03_20m[0])
     # Then we generate a tiff from the matrix
-    NDVI_tiff(B8A_20m[0], B04_20m[0], B8A_20m[1], B8A_20m[2])
-    RECI_tiff(B8A_20m[0], B04_20m[0], B8A_20m[1], B8A_20m[2])
-    GNDVI_tiff(B8A_20m[0], B03_20m[0], B8A_20m[1], B8A_20m[2])
+    NDVI_tiff(B8A_20m[1], B8A_20m[2])
+    RECI_tiff(B8A_20m[1], B8A_20m[2])
+    GNDVI_tiff(B8A_20m[1], B8A_20m[2])
 
 
 if __name__ == "__main__":
