@@ -78,6 +78,7 @@ Pygments = "==2.11.2"
 geojson = "*"
 numpy = "*"
 gdal = "*"
+cwlref-runner = "*"
 
 [dev-packages]
 
