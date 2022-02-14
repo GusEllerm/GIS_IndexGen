@@ -35,7 +35,7 @@ def NDVI_tiff(geotrans, projection):
     root_dir = os.path.abspath(os.curdir)
     os.system('gdaldem color-relief {} {} {}'.format(
     '"' + root_dir + "/Workflow outputs/Final outputs/Figures/NDVI.tif" + '"',
-    '"' + root_dir + "/Scripts/Sup data/col.txt" + '"',
+    '"' + root_dir + "/Scripts/color_data/col.txt" + '"',
     '"' + root_dir + "/Workflow outputs/Final outputs/Figures/NDVI_color.tif" + '"'
     ))
 
@@ -68,7 +68,7 @@ def RECI_tiff(geotrans, projection):
     root_dir = os.path.abspath(os.curdir)
     os.system('gdaldem color-relief {} {} {}'.format(
     '"' + root_dir + "/Workflow outputs/Final outputs/Figures/RECI.tif" + '"',
-    '"' + root_dir + "/Scripts/Sup data/col.txt" + '"',
+    '"' + root_dir + "/Scripts/color_data/col.txt" + '"',
     '"' + root_dir + "/Workflow outputs/Final outputs/Figures/RECI_color.tif" + '"'
     ))
 
@@ -101,6 +101,6 @@ def GNDVI_tiff(geotrans, projection):
     root_dir = os.path.abspath(os.curdir)
     os.system('gdaldem color-relief {} {} {}'.format(
     '"' + root_dir + "/Workflow outputs/Final outputs/Figures/GNDVI.tif" + '"',
-    '"' + root_dir + "/Scripts/Sup data/col.txt" + '"',
+    '"' + root_dir + "/Scripts/color_data/col.txt" + '"',
     '"' + root_dir + "/Workflow outputs/Final outputs/Figures/GNDVI_color.tif" + '"'
     ))

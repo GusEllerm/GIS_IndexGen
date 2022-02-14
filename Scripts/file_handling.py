@@ -1,8 +1,11 @@
 from osgeo import gdal 
 import numpy as np
 
-out_dir_band = "Workflow outputs/Intermediate outputs/Band arrays/"
-out_dir_index = "Workflow outputs/Intermediate outputs/Index arrays/"
+# out_dir_band = "Workflow outputs/Intermediate outputs/Band arrays/"
+# out_dir_index = "Workflow outputs/Intermediate outputs/Index arrays/"
+
+out_dir_band = ""
+out_dir_index = ""
 
 def write_band_to_file(band_name, band_array, band_link):
     # extract the coord reference system 
