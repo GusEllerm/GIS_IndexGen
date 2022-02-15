@@ -1,6 +1,46 @@
-from asyncio.log import logger
+import argparse
+import logging
+import numpy as np
 from cmath import sqrt
-from file_handling import write_index_to_file
+import pathlib
+from file_handling import read_band_from_file, write_index_to_file
+
+# Turn on logging 
+logging.getLogger().setLevel(logging.INFO)
+
+# Suppress divide by zero warning
+np.seterr(invalid='ignore')
+
+# Define CLI hooks
+def main():
+
+    index = {
+        "NDVI": ndvi,
+        "RECI": reci,
+        "NDRE": ndre,
+        "GNDVI": gndvi
+    }
+
+    parser = argparse.ArgumentParser(description="Calculates matrix for selected index")
+    parser.add_argument('-i',
+                        '--index',
+                        type=str,
+                        required=True,
+                        help="The index to caclualte")
+    parser.add_argument('-b',
+                        '--bands',
+                        nargs='+',
+                        type=pathlib.Path,
+                        help='list (space seperated) of bands to calculate index. IMPORTANT: order from shortest wavelength to longest',
+                        required=True,
+                        )
+
+    args = parser.parse_args()
+
+    if args.index in index:
+        index[args.index](args.bands)
+    else:
+        print("Index not found")
 
 ############### Define spectral vegetation indicies ##############
 ##################################################################
@@ -16,20 +56,37 @@ However, this index is senstive to soil brightness and atmospheric effects -
 this can be mitigated though other indices (EVI, SAVI, ARVI, GCL, SIPI)
 """
 
-def ndvi(nir, red):
-    logger.info("Creating NDVI matrix")
-    write_index_to_file("NDVI",
-                        (nir - red)/(nir + red))
+def ndvi(bands):
+    logging.info("Creating NDVI matrix")
+    try:
+        if (bands[0].exists() & bands[1].exists()):
+            B04 = read_band_from_file(bands[0])[0]
+            B8A = read_band_from_file(bands[1])[0]
+            write_index_to_file("NDVI",(B8A - B04)/(B8A + B04))
+        else:
+            raise Exception("Unable to find bands")
+    except Exception as e:
+        print(e)
+        print('error calculating NDVI matrix')
+    
  
 # Red-Edge Chlorophyll Vegetation Index (RECI)
 """
 Index measures chlorophyll content in leaves that are nourished by nitrogen. 
 Shows the photosyntheic activity of the canopy cover. 
 """
-def reci(nir, red):
-    logger.info("Creating RECI matrix")
-    write_index_to_file("RECI",
-                        (nir/red) -1)
+def reci(bands):
+    logging.info("Creating RECI matrix")
+    try:
+        if (bands[0].exists() & bands[1].exists()):
+            B04 = read_band_from_file(bands[0])[0]
+            B8A = read_band_from_file(bands[1])[0]
+            write_index_to_file("RECI",(B8A/B04) -1)
+        else:
+            raise Exception("Unable to find bands")
+    except Exception as e:
+        print(e)
+        print('error calculating RECI matrix')
 
 # Normalized Difference Red Edge Vegetation Index (NDRE)
 """
@@ -38,10 +95,41 @@ This index combines NIR spectral bands and a specific band for
 the narrow range between the visible red and read-nir transition
 zone. 
 """
-def ndre(nir, rededge):
-    logger.info("Creating NDRE matrix")
-    write_index_to_file("NDRE",
-                        nir - rededge) / (nir + rededge)
+def ndre(bands):
+    logging.info("Creating NDRE matrix")
+    try:
+        if (bands[0].exists() & bands[1].exists()):
+            B05 = read_band_from_file(bands[0])[0]
+            B8A = read_band_from_file(bands[0])[0]
+            write_index_to_file("NDRE",(B8A - B05) / (B8A + B05))
+        else:
+            raise Exception("Unable to find bands")
+    except Exception as e:
+        print(e)
+        print('error calculating NDRE matrix')
+
+
+# Green Normalized Difference Vegetation Index (GNDVI)
+"""
+GNDVI is a modification of NDVI but substitutes the green band for the red band.
+GNDVI measures chlorophyll content more accurately than NDVI.
+"""
+def gndvi(bands):
+    logging.info("Creating GNDVI matrix")
+    # nir = B8a, green = B3
+    try:
+        if (bands[0].exists() & bands[1].exists()):
+            B03 = read_band_from_file(bands[0])[0]
+            B8A = read_band_from_file(bands[0])[0]
+            write_index_to_file("GNDVI",((B8A - B03) / (B8A + B03)))
+        else:
+            raise Exception("Unable to find bands")
+    except Exception as e:
+        print(e)
+        print('error calculating GNDVI matrix')
+    
+
+##### TODO: re-organise inputs so it is shortest wavelength TO longest wavelength ########
 
 # Modified Soil-Adjusted Vegetation Index (MSAVI)
 """
@@ -51,18 +139,10 @@ with a high percentage of bare soil, scarce vegetation, or low chlorophyll
 content in plants
 """
 def msavi(band4, band3):
-    logger.info("Creating MSAVI matrix")
+    logging.info("Creating MSAVI matrix")
     a = 2*band4+1
     write_index_to_file("MSAVI",
                         ((a - sqrt((a*2)-8*(band4-band3)))/2))
-
-# Green Normalized Difference Vegetation Index (GNDVI)
-"""
-GNDVI is a modification of NDVI but substitutes the green band for the red band.
-GNDVI measures chlorophyll content more accurately than NDVI.
-"""
-def gndvi(nir, green):
-    write_index_to_file("GNDVI",((nir - green) / (nir + green)))
 
 # Normalized Difference Water Index (NDWI)
 """
@@ -70,7 +150,7 @@ This index outlines open water bodies and assess their turbidity,
 mitigating the reflectance of soil and land vegetation cover. 
 """
 def ndwi(nir, green):
-    logger.info("Creating NDWI matrix")
+    logging.info("Creating NDWI matrix")
     write_index_to_file("NDWI",((green - nir) / (green + nir)))
 
 # Soil Adjusted Vegetation Index (SAVI)
@@ -79,7 +159,7 @@ Corrects the NDVI index by adding an adjustment factor L to the equation.
 This corrects for soil noise (soil color, moisture, variability etc)
 """
 def savi(nir, red, l):
-    logger.info("Creating SAVI matrix")
+    logging.info("Creating SAVI matrix")
     write_index_to_file("SAVI",(((nir - red) / (nir + red + l)) * (1 + l)))
 
 # Optimized Soil Adjusted Vegetation Index (OSAVI)
@@ -89,7 +169,7 @@ The difference between OSAVI and SAVI is that OSAVI takes into account
 the standard value of the canopy background adjustment factor (0.16)
 """
 def osavi(nir, red):
-    logger.info("Making OSAVI matrix")
+    logging.info("Making OSAVI matrix")
     write_index_to_file("OSAVI",(nir - red) / (nir + red + 0.16))
 
 # Atmospherically Resistant Vegetation Index (ARVI)
@@ -99,7 +179,7 @@ Kuafman and Tanré corrected NDVI to mitigate atomspheric scattering effects
 by doubling the red band measurements and adding blue wavelengths
 """
 def arvi(nir, red, blue):
-    logger.info("Making ARVI matrix")
+    logging.info("Making ARVI matrix")
     write_index_to_file("ARVI",((nir - (2*red) + blue) / (nir + (2*red) + blue)))
 
 # Enhanced Vegetation Index (EVI)
@@ -110,7 +190,7 @@ The value range for EVI is -1 to 1, and for healthy vegetation, it
 varies between 0.2 and 0.8
 """
 def evi(nir, red, blue, c1, c2, l):
-    logger.info("Making EVI matrix")
+    logging.info("Making EVI matrix")
     # c1 and c2 are coefficents to adjust for aerosol scattering
     # for MODIS sensor, c1 = 6; c2 = 7.5 & l = 1
     write_index_to_file("EVI",(2.5 * ((nir - red) / ((nir) + (c1 * red) - (c2 * blue) + l))))
@@ -121,7 +201,7 @@ Enhances vegetation under strong atmospheric impact while smooting illumination
 variations. 
 """
 def vari(red, green, blue):
-    logger.info("Making VARI matrix")
+    logging.info("Making VARI matrix")
     write_index_to_file("VARI",(green - red) / (green + red - blue))
 
 # Leaf Area Vegetation Index (LAI)
@@ -142,7 +222,7 @@ Healthy vegetation shows a high reflectance in the NIR spectum, whereas
 the recently burned areas of vegetation reflect highly in the SWIR spectrum
 """
 def nbr(nir, swir):
-    logger.info("Making NBR matrix")
+    logging.info("Making NBR matrix")
     # SWIR for sentinel2 can be band 12 -> 2190mm short wave infrared
     write_index_to_file("NBR",((nir - swir) / (nir + swir)))
 
@@ -152,7 +232,7 @@ Provides analysis of vegetation with variable sanopy structure. It estimates
 the ratio of carotenoids to chlorophyll: an increasing valye signals vegetation stress
 """
 def sipi(nir, red, blue):
-    logger.info("Making SIPI matrix")
+    logging.info("Making SIPI matrix")
     write_index_to_file("SIPI",((nir - blue) / (nir - red)))
 
 # Green Chlorophyll Vegetation Index (GCI)
@@ -163,7 +243,7 @@ decreases in stressed plants and can therefore be used as a measurement of
 vegetation health
 """
 def gci(nir, green):
-    logger.info("Making GCI matrix")
+    logging.info("Making GCI matrix")
     write_index_to_file("GCI",(nir / green - 1))
 
 # Normalized Difference Snow Index (NDSI)
@@ -173,5 +253,9 @@ in the VIS band. Cloud reflection in these bands are high, allowing snow
 and clouds to be distingushed from each other. 
 """
 def ndsi(green, swir):
-    logger.info("Making NDSI matrix")
+    logging.info("Making NDSI matrix")
     write_index_to_file("NDSI",((green - swir) / (green + swir)))
+
+
+if __name__ == "__main__":
+    main()

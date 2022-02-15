@@ -11,4 +11,19 @@ pipenv run python3 Scripts/band_ingest.py single_res -rd "Data/S2A_MSIL2A_202202
 
 
 # Multi Res
+
 pipenv run python3 Scripts/band_ingest.py multi_res -r10m "Data/S2A_MSIL2A_20220207T222541_N0400_R029_T59GMK_20220208T001202.SAFE/GRANULE/L2A_T59GMK_A034632_20220207T222543/IMG_DATA/R10m" -r20m "Data/S2A_MSIL2A_20220207T222541_N0400_R029_T59GMK_20220208T001202.SAFE/GRANULE/L2A_T59GMK_A034632_20220207T222543/IMG_DATA/R20m" -r60m "Data/S2A_MSIL2A_20220207T222541_N0400_R029_T59GMK_20220208T001202.SAFE/GRANULE/L2A_T59GMK_A034632_20220207T222543/IMG_DATA/R60m"
+
+
+# Run example index matrix calculation
+
+# NDVI 
+pipenv run python3 Scripts/index_def.py -i NDVI -b /Users/eller/Projects/NDVI_Prototype/Workflow_outputs/Intermediate_outputs/Band_arrays/B04_20m.npz /Users/eller/Projects/NDVI_Prototype/Workflow_outputs/Intermediate_outputs/Band_arrays/B8A_20m.npz
+
+# RECI
+pipenv run python3 Scripts/index_def.py -i RECI -b /Users/eller/Projects/NDVI_Prototype/Workflow_outputs/Intermediate_outputs/Band_arrays/B04_20m.npz /Users/eller/Projects/NDVI_Prototype/Workflow_outputs/Intermediate_outputs/Band_arrays/B8A_20m.npz
+
+# NDRE
+pipenv run python3 Scripts/index_def.py -i NDRE -b /Users/eller/Projects/NDVI_Prototype/Workflow_outputs/Intermediate_outputs/Band_arrays/B05_20m.npz /Users/eller/Projects/NDVI_Prototype/Workflow_outputs/Intermediate_outputs/Band_arrays/B8A_20m.npz
+
+

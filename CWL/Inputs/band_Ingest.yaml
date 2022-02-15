@@ -1,11 +1,3 @@
-# band_ingest:
-#   class: File
-#   path: /Users/eller/Projects/NDVI Prototype/Scripts/band_ingest.py
-
-# file_handling: 
-#   class: File
-#   path: /Users/eller/Projects/NDVI Prototype/Scripts/file_handling.py
-# data_directory: Data/S2A_MSIL2A_20220207T222541_N0400_R029_T59GLL_20220208T001202.SAFE
 
 multi_res: multi_res
 

@@ -19,9 +19,9 @@ def write_index_to_file(index_name, index_array):
     # Write the index array to a file with index name
     np.savez_compressed(out_dir_index + index_name, index_array=index_array)
 
-def read_band_from_file(band_name):
+def read_band_from_file(band):
     # Read the compressed file
-    band_info = np.load(out_dir_band + band_name + '.npz')
+    band_info = np.load(band)
     # np returns a dictionary containing the arrays within; return an array of arrays
     return [band_info['band_array'],tuple(band_info['geotrans']),str(band_info['projection'])]
 
