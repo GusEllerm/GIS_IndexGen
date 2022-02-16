@@ -1,0 +1,11 @@
+index_array:
+  class: File
+  path: /Users/eller/Projects/NDVI_Prototype/Workflow_outputs/Intermediate_outputs/Index_arrays/NDVI.npz
+
+band_array:
+  class: File
+  path: /Users/eller/Projects/NDVI_Prototype/Workflow_outputs/Intermediate_outputs/Band_arrays/B8A_20m.npz
+
+color:
+  class: File
+  path: /Users/eller/Projects/NDVI_Prototype/Scripts/color_data/col.txt

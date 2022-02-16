@@ -11,10 +11,10 @@ inputs:
     type: File
     default:
       class: File
-      location: /Users/eller/Projects/NDVI Prototype/Scripts/band_ingest.py
+      location: /Users/eller/Projects/NDVI_Prototype/Scripts/band_ingest.py
       secondaryFiles:
         - class: File
-          location: /Users/eller/Projects/NDVI Prototype/Scripts/file_handling.py
+          location: /Users/eller/Projects/NDVI_Prototype/Scripts/file_handling.py
 
   multi_res:
     type: string
