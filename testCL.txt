@@ -27,3 +27,46 @@ pipenv run python3 Scripts/index_def.py -i RECI -b /Users/eller/Projects/NDVI_Pr
 pipenv run python3 Scripts/index_def.py -i NDRE -b /Users/eller/Projects/NDVI_Prototype/Workflow_outputs/Intermediate_outputs/Band_arrays/B05_20m.npz /Users/eller/Projects/NDVI_Prototype/Workflow_outputs/Intermediate_outputs/Band_arrays/B8A_20m.npz
 
 
+# Tiff generation
+
+# NDVI
+pipenv run python3 Scripts/tiff_gen.py -i /Users/eller/Projects/NDVI_Prototype/Workflow_outputs/Intermediate_outputs/Index_arrays/NDVI.npz -b /Users/eller/Projects/NDVI_Prototype/Workflow_outputs/Intermediate_outputs/Band_arrays/B8A_20m.npz -c /Users/eller/Projects/NDVI_Prototype/Scripts/color_data/col.txt
+
+# RECI
+pipenv run python3 Scripts/tiff_gen.py -i /Users/eller/Projects/NDVI_Prototype/Workflow_outputs/Intermediate_outputs/Index_arrays/RECI.npz -b /Users/eller/Projects/NDVI_Prototype/Workflow_outputs/Intermediate_outputs/Band_arrays/B8A_20m.npz -c /Users/eller/Projects/NDVI_Prototype/Scripts/color_data/col.txt
+
+------------------------------------ V2 tests ----------------------------------------
+
+# Example index matrix calculations
+
+# NDVI r20m
+pipenv run python3 Scripts/index_def.py -i NDVI -b /Users/eller/Projects/NDVI_Prototype/Data/S2A_MSIL2A_20220207T222541_N0400_R029_T59GMK_20220208T001202.SAFE/GRANULE/L2A_T59GMK_A034632_20220207T222543/IMG_DATA/R20m/T59GMK_20220207T222541_B04_20m.jp2 /Users/eller/Projects/NDVI_Prototype/Data/S2A_MSIL2A_20220207T222541_N0400_R029_T59GMK_20220208T001202.SAFE/GRANULE/L2A_T59GMK_A034632_20220207T222543/IMG_DATA/R20m/T59GMK_20220207T222541_B8A_20m.jp2
+
+# RECI r20m 
+pipenv run python3 Scripts/index_def.py -i RECI -b /Users/eller/Projects/NDVI_Prototype/Data/S2A_MSIL2A_20220207T222541_N0400_R029_T59GMK_20220208T001202.SAFE/GRANULE/L2A_T59GMK_A034632_20220207T222543/IMG_DATA/R20m/T59GMK_20220207T222541_B04_20m.jp2 /Users/eller/Projects/NDVI_Prototype/Data/S2A_MSIL2A_20220207T222541_N0400_R029_T59GMK_20220208T001202.SAFE/GRANULE/L2A_T59GMK_A034632_20220207T222543/IMG_DATA/R20m/T59GMK_20220207T222541_B8A_20m.jp2
+
+# NDRE r20m 
+pipenv run python3 Scripts/index_def.py -i NDRE -b /Users/eller/Projects/NDVI_Prototype/Data/S2A_MSIL2A_20220207T222541_N0400_R029_T59GMK_20220208T001202.SAFE/GRANULE/L2A_T59GMK_A034632_20220207T222543/IMG_DATA/R20m/T59GMK_20220207T222541_B05_20m.jp2 /Users/eller/Projects/NDVI_Prototype/Data/S2A_MSIL2A_20220207T222541_N0400_R029_T59GMK_20220208T001202.SAFE/GRANULE/L2A_T59GMK_A034632_20220207T222543/IMG_DATA/R20m/T59GMK_20220207T222541_B8A_20m.jp2
+
+# GNDVI r20m 
+pipenv run python3 Scripts/index_def.py -i GNDVI -b /Users/eller/Projects/NDVI_Prototype/Data/S2A_MSIL2A_20220207T222541_N0400_R029_T59GMK_20220208T001202.SAFE/GRANULE/L2A_T59GMK_A034632_20220207T222543/IMG_DATA/R20m/T59GMK_20220207T222541_B03_20m.jp2 /Users/eller/Projects/NDVI_Prototype/Data/S2A_MSIL2A_20220207T222541_N0400_R029_T59GMK_20220208T001202.SAFE/GRANULE/L2A_T59GMK_A034632_20220207T222543/IMG_DATA/R20m/T59GMK_20220207T222541_B8A_20m.jp2
+
+# NDVI r10m
+pipenv run python3 Scripts/index_def.py -i NDVI -b /Users/eller/Projects/NDVI_Prototype/Data/S2A_MSIL2A_20220207T222541_N0400_R029_T59GMK_20220208T001202.SAFE/GRANULE/L2A_T59GMK_A034632_20220207T222543/IMG_DATA/R10m/T59GMK_20220207T222541_B04_10m.jp2 /Users/eller/Projects/NDVI_Prototype/Data/S2A_MSIL2A_20220207T222541_N0400_R029_T59GMK_20220208T001202.SAFE/GRANULE/L2A_T59GMK_A034632_20220207T222543/IMG_DATA/R10m/T59GMK_20220207T222541_B08_10m.jp2
+
+# Example tiff generation
+
+# NDVI r20m
+pipenv run python3 Scripts/tiff_gen.py -i /Users/eller/Projects/NDVI_Prototype/T59GMK_20220207T222541_NDVI_20m.npz -c /Users/eller/Projects/NDVI_Prototype/Scripts/color_data/col.txt
+
+# RECI r20m
+pipenv run python3 Scripts/tiff_gen.py -i /Users/eller/Projects/NDVI_Prototype/T59GMK_20220207T222541_RECI_20m.npz -c /Users/eller/Projects/NDVI_Prototype/Scripts/color_data/col.txt
+
+# NDRE r20m
+pipenv run python3 Scripts/tiff_gen.py -i /Users/eller/Projects/NDVI_Prototype/T59GMK_20220207T222541_NDRE_20m.npz -c /Users/eller/Projects/NDVI_Prototype/Scripts/color_data/col.txt
+
+# GNDVI r20m
+pipenv run python3 Scripts/tiff_gen.py -i /Users/eller/Projects/NDVI_Prototype/T59GMK_20220207T222541_GNDVI_20m.npz -c /Users/eller/Projects/NDVI_Prototype/Scripts/color_data/col.txt
+
+# NDVI r10m
+pipenv run python3 Scripts/tiff_gen.py -i /Users/eller/Projects/NDVI_Prototype/T59GMK_20220207T222541_NDVI_10m.npz -c /Users/eller/Projects/NDVI_Prototype/Scripts/color_data/col.txt

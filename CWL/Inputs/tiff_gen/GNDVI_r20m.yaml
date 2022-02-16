@@ -1,0 +1,7 @@
+index_array:
+  class: File
+  path: /Users/eller/Projects/NDVI_Prototype/CWL/T59GMK_20220207T222541_RECI_10m.npz
+
+color:
+  class: File
+  path: /Users/eller/Projects/NDVI_Prototype/Scripts/color_data/col.txt

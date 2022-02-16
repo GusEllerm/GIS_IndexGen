@@ -22,12 +22,6 @@ inputs:
       position: 1
       prefix: -i
 
-  band_array:
-    type: File
-    inputBinding:
-      position: 2
-      prefix: -b
-
   color: 
     type: File
     inputBinding:
@@ -35,7 +29,7 @@ inputs:
       prefix: -c
 
 outputs:
-  tiff:
+  tif:
     type: File
     outputBinding:
-      glob: '*.tif'
+      glob: "*.tif"

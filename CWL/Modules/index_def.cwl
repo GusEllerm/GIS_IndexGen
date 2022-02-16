@@ -5,7 +5,8 @@ class: CommandLineTool
 
 baseCommand: ["python3"]
 arguments: [$(inputs.index_def)]
-requirements: []
+requirements: 
+  InlineJavascriptRequirement: {}
 
 inputs: 
   index_def:
@@ -30,13 +31,16 @@ inputs:
         separate: true
         position: 2
 
-        
-
 outputs: 
   index_matrix:
     type: File
     outputBinding:
-      glob: "$(inputs.index).npz"
+      glob: "*$(inputs.index)*.npz"
+
+  all_outputs:
+    type: File[]
+    outputBinding: 
+      glob: "*.npz"
 
     
   

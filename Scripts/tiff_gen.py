@@ -1,106 +1,86 @@
 import logging
-from file_handling import read_index_from_file
-from index_def import *
-from osgeo import gdal 
+import argparse
+import pathlib
 import os
+from re import L
+from file_handling import read_index_from_file, read_band_from_file
+from osgeo import gdal 
+
+# Turn logging on
+logging.getLogger().setLevel(logging.INFO)
+
+def main():
+    parser = argparse.ArgumentParser(description="Creates TIFF images from index files. Different Color reliefs can be applied")
+    parser.add_argument('-i',
+                        '--index_file',
+                        type=pathlib.Path,
+                        required=True,
+                        help="Previously calculated matrix")
+    parser.add_argument('-c',
+                        '--color',
+                        type=pathlib.Path,
+                        required=False,
+                        help="A color profile for the resulting TiFF output")
+    parser.add_argument('-f',
+                        '--force_recompute',
+                        action='store_true')
+
+    args = parser.parse_args()
+
+
+    if (args.force_recompute):
+        logging.info("Forced recomputation - recomputing ...")
+
+    print(args)
+
+    generate_tiff(args.index_file, args.color, args.force_recompute)
+
 
 ## Image generation
-# NDVI
-def NDVI_tiff(geotrans, projection):
+def generate_tiff(index, color, recompute):
+    logging.info('-'*80)
+    logging.info("Creating {}.tiff".format(index.stem))
+    outfile = pathlib.Path(index).with_suffix('.tif')
 
-    logging.info("Creating NDVI tiff")
+    # Check if tiff already exists for this index
+    if not (outfile.exists()) or recompute:
+        logging.info("Tiff image does not exist. Creating ...")
+        
+        index = read_index_from_file(str(index))
 
-    outfile_name = 'Workflow outputs/Final outputs/Figures/NDVI.tif'
-    ndvi_result = read_index_from_file('NDVI')
-
-    # Get pixels for hight and width
-    x_pixels = ndvi_result.shape[0]
-    y_pixels = ndvi_result.shape[1]
-
-    # Set up GeoTIFF output
-    driver = gdal.GetDriverByName('GTiff')
-
-    # Create driver using filename, x & y pixels, # of bands and datatype
-    ndvi_data = driver.Create(outfile_name,x_pixels,y_pixels,1,gdal.GDT_Float32)
-
-    # Set NDVI array as the 1 output raster band
-    ndvi_data.GetRasterBand(1).WriteArray(ndvi_result)
-
-    # Set geotransform parameters and projection on the output tiff
-    ndvi_data.SetGeoTransform(geotrans)
-    ndvi_data.SetProjection(projection)
-    ndvi_data.FlushCache()
-    ndvi_data = None
+        index_matrix, geotrans, projection = index[0], index[1], index[2] 
     
-    root_dir = os.path.abspath(os.curdir)
-    os.system('gdaldem color-relief {} {} {}'.format(
-    '"' + root_dir + "/Workflow outputs/Final outputs/Figures/NDVI.tif" + '"',
-    '"' + root_dir + "/Scripts/color_data/col.txt" + '"',
-    '"' + root_dir + "/Workflow outputs/Final outputs/Figures/NDVI_color.tif" + '"'
-    ))
+        # Get pixels for height and width
+        x_pixels = index_matrix.shape[0]
+        y_pixels = index_matrix.shape[1]
 
-def RECI_tiff(geotrans, projection):
+        # Set up GeoTIFF output
+        driver = gdal.GetDriverByName('GTiff')
 
-    logging.info("Creating RECI tiff")
+        # Create driver using filename, x & y pixels, # of bands and datatype
+        matrix_driver = driver.Create(str(outfile), x_pixels, y_pixels, 1, gdal.GDT_Float32)
 
-    outfile_name = 'Workflow outputs/Final outputs/Figures/RECI.tif'
-    reci_result = read_index_from_file('RECI')
+        # Set index array as the 1 output raster band
+        matrix_driver.GetRasterBand(1).WriteArray(index_matrix)
 
-    # Get pixels for height and width
-    x_pixels = reci_result.shape[0]
-    y_pixels = reci_result.shape[1]
+        # Set geotransform parameters and projection on the output tiff
+        matrix_driver.SetGeoTransform(geotrans)
+        matrix_driver.SetProjection(projection)
+        matrix_driver.FlushCache()
+        matrix_driver = None
 
-    # Set up GeoTIFF output
-    driver = gdal.GetDriverByName('GTiff')
+        if (color != None):
+            logging.info("Color map provided. Generating tiff ...")
+            # Apply Color relief
+            os.system('gdaldem color-relief {} {} {}'.format(
+            str(outfile),
+            str(color),
+            str(outfile)
+            ))
+        
+    else:
+        logging.info("{} exists! Skipping computation ...".format(str(outfile)))
 
-    # Create driver using filename, x & y pixels, # of bands and datatype 
-    reci_data = driver.Create(outfile_name,x_pixels,y_pixels,1,gdal.GDT_Float32)
 
-    # Set RECI array as teh 1 output raster band
-    reci_data.GetRasterBand(1).WriteArray(reci_result)
-
-    # Set geotransform parameters and projection on the output tiff
-    reci_data.SetGeoTransform(geotrans)
-    reci_data.SetProjection(projection)
-    reci_data.FlushCache()
-    reci_data = None
-
-    root_dir = os.path.abspath(os.curdir)
-    os.system('gdaldem color-relief {} {} {}'.format(
-    '"' + root_dir + "/Workflow outputs/Final outputs/Figures/RECI.tif" + '"',
-    '"' + root_dir + "/Scripts/color_data/col.txt" + '"',
-    '"' + root_dir + "/Workflow outputs/Final outputs/Figures/RECI_color.tif" + '"'
-    ))
-
-def GNDVI_tiff(geotrans, projection):
-
-    logging.info("Creating GNDVI tiff")
-    
-    outfile_name = 'Workflow outputs/Final outputs/Figures/GNDVI.tif'
-    gndvi_result = read_index_from_file("GNDVI")
-
-    # Get pixels for height and width
-    x_pixels = gndvi_result.shape[0]
-    y_pixels = gndvi_result.shape[1]
-
-    # Set up GeoTIFF output
-    driver = gdal.GetDriverByName('GTiff')
-
-    # Create driver using filename, x & y pixels, # of bands and datatype 
-    gndvi_data = driver.Create(outfile_name,x_pixels,y_pixels,1,gdal.GDT_Float32)
-
-    # Set RECI array as teh 1 output raster band
-    gndvi_data.GetRasterBand(1).WriteArray(gndvi_result)
-
-    # Set geotransform parameters and projection on the output tiff
-    gndvi_data.SetGeoTransform(geotrans)
-    gndvi_data.SetProjection(projection)
-    gndvi_data.FlushCache()
-    gndvi_data = None
-
-    root_dir = os.path.abspath(os.curdir)
-    os.system('gdaldem color-relief {} {} {}'.format(
-    '"' + root_dir + "/Workflow outputs/Final outputs/Figures/GNDVI.tif" + '"',
-    '"' + root_dir + "/Scripts/color_data/col.txt" + '"',
-    '"' + root_dir + "/Workflow outputs/Final outputs/Figures/GNDVI_color.tif" + '"'
-    ))
+if __name__ == "__main__":
+    main()

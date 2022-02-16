@@ -1,9 +1,11 @@
 import argparse
 import logging
+from re import A
 import numpy as np
-from cmath import sqrt
 import pathlib
-from file_handling import read_band_from_file, write_index_to_file
+from osgeo import gdal
+from cmath import sqrt
+from file_handling import read_band_from_file, write_index_to_file, write_band_to_file
 
 # Turn on logging 
 logging.getLogger().setLevel(logging.INFO)
@@ -34,13 +36,36 @@ def main():
                         help='list (space seperated) of bands to calculate index. IMPORTANT: order from shortest wavelength to longest',
                         required=True,
                         )
+    parser.add_argument('-f',
+                        '--force_recompute',
+                        action='store_true')
 
     args = parser.parse_args()
 
     if args.index in index:
-        index[args.index](args.bands)
+        if (args.force_recompute):
+            logging.info('-'*80)
+            logging.info("Forced recomputation - recomputing ...")
+        index[args.index](args.bands, args.index, args.force_recompute)
     else:
         print("Index not found")
+
+# Helper function to check if band has been seen before & therefor does not need to be re-written to disk
+def bands_exist(bands, recompute):
+    for band in bands:
+        if not (pathlib.Path((band.with_suffix('.npz').name)).exists()) or recompute:
+            logging.info("{} does not exist. Generating ...".format(band.with_suffix('.npz').name))
+            band_link = gdal.Open(str(band))
+            band_array = band_link.ReadAsArray().astype(float)
+            write_band_to_file(band.with_suffix('').name, band_array, band_link)
+        else:
+            logging.info("{} exists! Skipping ingestion ...".format(band.with_suffix('.npz').name))
+
+def gen_output_name(band, index):
+    index_out = band.with_suffix('').name.split("_")
+    index_out[2] = index
+    index_out = '_'.join(index_out)
+    return index_out
 
 ############### Define spectral vegetation indicies ##############
 ##################################################################
@@ -56,18 +81,32 @@ However, this index is senstive to soil brightness and atmospheric effects -
 this can be mitigated though other indices (EVI, SAVI, ARVI, GCL, SIPI)
 """
 
-def ndvi(bands):
+def ndvi(bands, index, recompute):
+    logging.info('-'*80)
     logging.info("Creating NDVI matrix")
-    try:
-        if (bands[0].exists() & bands[1].exists()):
-            B04 = read_band_from_file(bands[0])[0]
-            B8A = read_band_from_file(bands[1])[0]
-            write_index_to_file("NDVI",(B8A - B04)/(B8A + B04))
-        else:
-            raise Exception("Unable to find bands")
-    except Exception as e:
-        print(e)
-        print('error calculating NDVI matrix')
+    band_data = []
+
+    # Create outfile name 
+    index_out = gen_output_name(bands[0], index)
+
+    # Check if the band arrays already exist
+    bands_exist(bands, recompute)
+
+    # Check if the index data already exists
+    if (not pathlib.Path(index_out).with_suffix('.npz').exists()) or recompute:
+        logging.info("Index matrix does not exist. Creating ...")
+        # Open each bands datafile for index calculation.
+        for band in bands:
+            band_data.append(read_band_from_file(band.with_suffix('.npz').name)[0])
+        # Set as associated band for code readability
+        B04 = band_data[0]
+        B8A = band_data[1]
+        # Write index to disk
+        write_index_to_file(index_out, (B8A - B04)/(B8A + B04), bands[0])
+    else:
+        logging.info("Index matrix exists! Skipping computation ...")
+
+
     
  
 # Red-Edge Chlorophyll Vegetation Index (RECI)
@@ -75,18 +114,31 @@ def ndvi(bands):
 Index measures chlorophyll content in leaves that are nourished by nitrogen. 
 Shows the photosyntheic activity of the canopy cover. 
 """
-def reci(bands):
+def reci(bands, index, recompute):
+    logging.info('-'*80)
     logging.info("Creating RECI matrix")
-    try:
-        if (bands[0].exists() & bands[1].exists()):
-            B04 = read_band_from_file(bands[0])[0]
-            B8A = read_band_from_file(bands[1])[0]
-            write_index_to_file("RECI",(B8A/B04) -1)
-        else:
-            raise Exception("Unable to find bands")
-    except Exception as e:
-        print(e)
-        print('error calculating RECI matrix')
+    band_data = []
+
+    # Create outfile name
+    index_out = gen_output_name(bands[0], index)
+
+    # Check if the band arrays already exist
+    bands_exist(bands, recompute)
+
+    # Check if the index data already exists
+    if not (pathlib.Path(index_out).with_suffix('.npz').exists()) or recompute:
+        logging.info("Index matrix does not exist. Creating ...")
+        # Open each bands datafile for index calculation.
+        for band in bands:
+            band_data.append(read_band_from_file(band.with_suffix('.npz').name)[0])
+        # Set as associated band for code readability
+        B04 = band_data[0]
+        B8A = band_data[1]
+        # Write index to disk
+        write_index_to_file(index_out,(B8A/B04) -1, bands[0])
+    else:
+        logging.info("Index matrix exists! Skipping computation ...")
+
 
 # Normalized Difference Red Edge Vegetation Index (NDRE)
 """
@@ -95,18 +147,30 @@ This index combines NIR spectral bands and a specific band for
 the narrow range between the visible red and read-nir transition
 zone. 
 """
-def ndre(bands):
+def ndre(bands, index, recompute):
+    logging.info('-'*80)
     logging.info("Creating NDRE matrix")
-    try:
-        if (bands[0].exists() & bands[1].exists()):
-            B05 = read_band_from_file(bands[0])[0]
-            B8A = read_band_from_file(bands[0])[0]
-            write_index_to_file("NDRE",(B8A - B05) / (B8A + B05))
-        else:
-            raise Exception("Unable to find bands")
-    except Exception as e:
-        print(e)
-        print('error calculating NDRE matrix')
+    band_data = []
+
+    # Create outfile name
+    index_out = gen_output_name(bands[0], index)
+
+    # Check if the band arrays already exist
+    bands_exist(bands, recompute)
+
+    # Check if the index data already exists
+    if not (pathlib.Path(index_out).with_suffix('.npz').exists()) or recompute:
+        logging.info("Index matrix does not exist. Creating ...")
+        # Open each bands datafile for index calculation.
+        for band in bands:
+            band_data.append(read_band_from_file(band.with_suffix('.npz').name)[0])
+        # Set as associated band for code readability
+        B05 = band_data[0]
+        B8A = band_data[1]
+        # Write index to disk
+        write_index_to_file(index_out,(B8A - B05) / (B8A + B05), bands[0])
+    else:
+        logging.info("Index matrix exists! Skipping computation ...")
 
 
 # Green Normalized Difference Vegetation Index (GNDVI)
@@ -114,19 +178,30 @@ def ndre(bands):
 GNDVI is a modification of NDVI but substitutes the green band for the red band.
 GNDVI measures chlorophyll content more accurately than NDVI.
 """
-def gndvi(bands):
+def gndvi(bands, index, recompute):
+    logging.info('-'*80)
     logging.info("Creating GNDVI matrix")
-    # nir = B8a, green = B3
-    try:
-        if (bands[0].exists() & bands[1].exists()):
-            B03 = read_band_from_file(bands[0])[0]
-            B8A = read_band_from_file(bands[0])[0]
-            write_index_to_file("GNDVI",((B8A - B03) / (B8A + B03)))
-        else:
-            raise Exception("Unable to find bands")
-    except Exception as e:
-        print(e)
-        print('error calculating GNDVI matrix')
+    band_data = []
+
+    # Create outfile name
+    index_out = gen_output_name(bands[0], index)
+
+    # Check if the band arrays already exist
+    bands_exist(bands, recompute)
+
+    # Check if the index data already exists
+    if not (pathlib.Path(index_out).with_suffix('.npz').exists()) or recompute:
+        logging.info("Index matrix does not exist. Creating ...")
+        # Open each bands datafile for index calculation.
+        for band in bands:
+            band_data.append(read_band_from_file(band.with_suffix('.npz').name)[0])
+        # Set as associated band for code readability
+        B03 = band_data[0]
+        B8A = band_data[0]
+        # Write index to disk
+        write_index_to_file(index_out,((B8A - B03) / (B8A + B03)), bands[0])
+    else:
+        logging.info("Index matrix exists! Skipping computation ...")
     
 
 ##### TODO: re-organise inputs so it is shortest wavelength TO longest wavelength ########

@@ -1,5 +1,0 @@
-index: RECI
-
-bands: 
-- {class: File, path: /Users/eller/Projects/NDVI_Prototype/Workflow_outputs/Intermediate_outputs/Band_arrays/B04_20m.npz}
-- {class: File, path: /Users/eller/Projects/NDVI_Prototype/Workflow_outputs/Intermediate_outputs/Band_arrays/B8A_20m.npz}
