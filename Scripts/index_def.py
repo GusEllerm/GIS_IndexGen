@@ -1,11 +1,10 @@
 import argparse
 import logging
-from re import A
 import numpy as np
 import pathlib
-from osgeo import gdal
+import rasterio
 from cmath import sqrt
-from file_handling import read_band_from_file, write_index_to_file, write_band_to_file
+from file_handling import *
 
 # Turn on logging 
 logging.getLogger().setLevel(logging.INFO)
@@ -53,13 +52,14 @@ def main():
 # Helper function to check if band has been seen before & therefor does not need to be re-written to disk
 def bands_exist(bands, recompute):
     for band in bands:
-        if not (pathlib.Path((band.with_suffix('.npz').name)).exists()) or recompute:
-            logging.info("{} does not exist. Generating ...".format(band.with_suffix('.npz').name))
-            band_link = gdal.Open(str(band))
-            band_array = band_link.ReadAsArray().astype(float)
-            write_band_to_file(band.with_suffix('').name, band_array, band_link)
+        if not (pathlib.Path((band.with_suffix('.pickle').name)).exists()) or recompute:
+            logging.info("{} does not exist. Generating ...".format(band.with_suffix('.pickle').name))
+            band_link = rasterio.open(str(band))
+            band_array = band_link.read()
+            band_link.close()
+            write_band_to_file(band.with_suffix('').name, band_array, band)
         else:
-            logging.info("{} exists! Skipping ingestion ...".format(band.with_suffix('.npz').name))
+            logging.info("{} exists! Skipping ingestion ...".format(band.with_suffix('.pickle').name))
 
 def gen_output_name(band, index):
     index_out = band.with_suffix('').name.split("_")
@@ -85,30 +85,24 @@ def ndvi(bands, index, recompute):
     logging.info('-'*80)
     logging.info("Creating NDVI matrix")
     band_data = []
-
     # Create outfile name 
-    index_out = gen_output_name(bands[0], index)
-
+    index_out = gen_output_name(bands[0], index) # Currently on pause as it relies on the file name
     # Check if the band arrays already exist
     bands_exist(bands, recompute)
-
     # Check if the index data already exists
-    if (not pathlib.Path(index_out).with_suffix('.npz').exists()) or recompute:
+    if (not pathlib.Path(index_out).with_suffix('.pickle').exists()) or recompute:
         logging.info("Index matrix does not exist. Creating ...")
         # Open each bands datafile for index calculation.
         for band in bands:
-            band_data.append(read_band_from_file(band.with_suffix('.npz').name)[0])
+            band_data.append(read_band_from_file(band.with_suffix('.pickle').name))
         # Set as associated band for code readability
-        B04 = band_data[0]
-        B8A = band_data[1]
+        B04 = band_data[0][1].astype('f4')
+        B8A = band_data[1][1].astype('f4')
         # Write index to disk
-        write_index_to_file(index_out, (B8A - B04)/(B8A + B04), bands[0])
+        write_index_to_file(index_out, (B8A - B04)/(B8A + B04), band_data[0][2])
     else:
         logging.info("Index matrix exists! Skipping computation ...")
 
-
-    
- 
 # Red-Edge Chlorophyll Vegetation Index (RECI)
 """
 Index measures chlorophyll content in leaves that are nourished by nitrogen. 
@@ -118,27 +112,23 @@ def reci(bands, index, recompute):
     logging.info('-'*80)
     logging.info("Creating RECI matrix")
     band_data = []
-
     # Create outfile name
     index_out = gen_output_name(bands[0], index)
-
     # Check if the band arrays already exist
     bands_exist(bands, recompute)
-
     # Check if the index data already exists
-    if not (pathlib.Path(index_out).with_suffix('.npz').exists()) or recompute:
+    if not (pathlib.Path(index_out).with_suffix('.pickle').exists()) or recompute:
         logging.info("Index matrix does not exist. Creating ...")
         # Open each bands datafile for index calculation.
         for band in bands:
-            band_data.append(read_band_from_file(band.with_suffix('.npz').name)[0])
+            band_data.append(read_band_from_file(band.with_suffix('.pickle').name))
         # Set as associated band for code readability
-        B04 = band_data[0]
-        B8A = band_data[1]
+        B04 = band_data[0][1].astype('f4')
+        B8A = band_data[1][1].astype('f4')
         # Write index to disk
-        write_index_to_file(index_out,(B8A/B04) -1, bands[0])
+        write_index_to_file(index_out,(B8A/B04) -1, band_data[0][2])
     else:
         logging.info("Index matrix exists! Skipping computation ...")
-
 
 # Normalized Difference Red Edge Vegetation Index (NDRE)
 """
@@ -151,27 +141,23 @@ def ndre(bands, index, recompute):
     logging.info('-'*80)
     logging.info("Creating NDRE matrix")
     band_data = []
-
     # Create outfile name
     index_out = gen_output_name(bands[0], index)
-
     # Check if the band arrays already exist
     bands_exist(bands, recompute)
-
     # Check if the index data already exists
-    if not (pathlib.Path(index_out).with_suffix('.npz').exists()) or recompute:
+    if not (pathlib.Path(index_out).with_suffix('.pickle').exists()) or recompute:
         logging.info("Index matrix does not exist. Creating ...")
         # Open each bands datafile for index calculation.
         for band in bands:
-            band_data.append(read_band_from_file(band.with_suffix('.npz').name)[0])
+            band_data.append(read_band_from_file(band.with_suffix('.pickle').name))
         # Set as associated band for code readability
-        B05 = band_data[0]
-        B8A = band_data[1]
+        B05 = band_data[0][1].astype('f4')
+        B8A = band_data[1][1].astype('f4')
         # Write index to disk
-        write_index_to_file(index_out,(B8A - B05) / (B8A + B05), bands[0])
+        write_index_to_file(index_out,(B8A - B05) / (B8A + B05), band_data[0][2])
     else:
         logging.info("Index matrix exists! Skipping computation ...")
-
 
 # Green Normalized Difference Vegetation Index (GNDVI)
 """
@@ -182,24 +168,21 @@ def gndvi(bands, index, recompute):
     logging.info('-'*80)
     logging.info("Creating GNDVI matrix")
     band_data = []
-
     # Create outfile name
     index_out = gen_output_name(bands[0], index)
-
     # Check if the band arrays already exist
     bands_exist(bands, recompute)
-
     # Check if the index data already exists
-    if not (pathlib.Path(index_out).with_suffix('.npz').exists()) or recompute:
+    if not (pathlib.Path(index_out).with_suffix('.pickle').exists()) or recompute:
         logging.info("Index matrix does not exist. Creating ...")
         # Open each bands datafile for index calculation.
         for band in bands:
-            band_data.append(read_band_from_file(band.with_suffix('.npz').name)[0])
+            band_data.append(read_band_from_file(band.with_suffix('.pickle').name))
         # Set as associated band for code readability
-        B03 = band_data[0]
-        B8A = band_data[0]
+        B03 = band_data[0][1].astype('f4')
+        B8A = band_data[1][1].astype('f4')
         # Write index to disk
-        write_index_to_file(index_out,((B8A - B03) / (B8A + B03)), bands[0])
+        write_index_to_file(index_out,((B8A - B03) / (B8A + B03)), band_data[0][2])
     else:
         logging.info("Index matrix exists! Skipping computation ...")
     

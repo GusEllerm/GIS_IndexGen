@@ -78,6 +78,7 @@ geojson = "*"
 cwlref-runner = "*"
 numpy = "*"
 gdal = "*"
+rasterio = "*"
 
 [dev-packages]
 

@@ -1,10 +1,8 @@
 import logging
 import argparse
 import pathlib
-import os
-from re import L
-from file_handling import read_index_from_file, read_band_from_file
-from osgeo import gdal 
+import matplotlib.pyplot as plt
+from file_handling import read_band_from_file
 
 # Turn logging on
 logging.getLogger().setLevel(logging.INFO)
@@ -18,20 +16,18 @@ def main():
                         help="Previously calculated matrix")
     parser.add_argument('-c',
                         '--color',
-                        type=pathlib.Path,
+                        type=str,
                         required=False,
                         help="A color profile for the resulting TiFF output")
     parser.add_argument('-f',
                         '--force_recompute',
-                        action='store_true')
+                        action='store_true',
+                        help="Recomputes tiff regardless if it is found in directory")
 
     args = parser.parse_args()
 
-
     if (args.force_recompute):
         logging.info("Forced recomputation - recomputing ...")
-
-    print(args)
 
     generate_tiff(args.index_file, args.color, args.force_recompute)
 
@@ -40,44 +36,23 @@ def main():
 def generate_tiff(index, color, recompute):
     logging.info('-'*80)
     logging.info("Creating {}.tiff".format(index.stem))
-    outfile = pathlib.Path(index).with_suffix('.tif')
-
+    # Extract index information
+    index = read_band_from_file(str(index))
+    index_name, index_matrix, index_profile = index[0], index[1][0], index[2]
+    # Make outfile name
+    outfile = pathlib.Path(index_name).with_suffix('.tif')
     # Check if tiff already exists for this index
     if not (outfile.exists()) or recompute:
         logging.info("Tiff image does not exist. Creating ...")
-        
-        index = read_index_from_file(str(index))
-
-        index_matrix, geotrans, projection = index[0], index[1], index[2] 
-    
-        # Get pixels for height and width
-        x_pixels = index_matrix.shape[0]
-        y_pixels = index_matrix.shape[1]
-
-        # Set up GeoTIFF output
-        driver = gdal.GetDriverByName('GTiff')
-
-        # Create driver using filename, x & y pixels, # of bands and datatype
-        matrix_driver = driver.Create(str(outfile), x_pixels, y_pixels, 1, gdal.GDT_Float32)
-
-        # Set index array as the 1 output raster band
-        matrix_driver.GetRasterBand(1).WriteArray(index_matrix)
-
-        # Set geotransform parameters and projection on the output tiff
-        matrix_driver.SetGeoTransform(geotrans)
-        matrix_driver.SetProjection(projection)
-        matrix_driver.FlushCache()
-        matrix_driver = None
-
         if (color != None):
-            logging.info("Color map provided. Generating tiff ...")
-            # Apply Color relief
-            os.system('gdaldem color-relief {} {} {}'.format(
-            str(outfile),
-            str(color),
-            str(outfile)
-            ))
-        
+            plt.imshow(index_matrix, cmap=color)
+        else:
+            plt.imshow(index_matrix)
+        plt.colorbar()
+        plt.title(index_name)
+        plt.xlabel("Column #")
+        plt.ylabel("Row #")
+        plt.savefig(outfile, dpi=800)
     else:
         logging.info("{} exists! Skipping computation ...".format(str(outfile)))
 

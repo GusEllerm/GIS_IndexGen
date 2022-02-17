@@ -6,6 +6,10 @@ class: CommandLineTool
 baseCommand: ["python3"]
 arguments: [$(inputs.tiff_gen)]
 
+requirements:
+  ResourceRequirement:
+    ramMin: 4096
+
 inputs:
   tiff_gen: 
     type: File
@@ -22,14 +26,14 @@ inputs:
       position: 1
       prefix: -i
 
-  color: 
-    type: File
+  color:
+    type: string
     inputBinding:
       position: 2
       prefix: -c
 
 outputs:
-  tif:
+  tiff:
     type: File
     outputBinding:
       glob: "*.tif"

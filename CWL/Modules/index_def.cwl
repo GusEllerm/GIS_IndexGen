@@ -35,12 +35,12 @@ outputs:
   index_matrix:
     type: File
     outputBinding:
-      glob: "*$(inputs.index)*.npz"
+      glob: "*$(inputs.index)*.pickle"
 
   all_outputs:
     type: File[]
     outputBinding: 
-      glob: "*.npz"
+      glob: "*.pickle"
 
     
   

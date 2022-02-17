@@ -1,0 +1,5 @@
+index_array:
+  class: File
+  path: /Users/eller/Projects/NDVI_Prototype/CWL/T59GMK_20220207T222541_NDVI_20m.pickle
+
+color: RdYlGn
