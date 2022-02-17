@@ -7,3 +7,6 @@ data/*.SAFE
 
 # Ignore key for API
 API/
+
+# Ignore pickle datafiles
+*.pickle

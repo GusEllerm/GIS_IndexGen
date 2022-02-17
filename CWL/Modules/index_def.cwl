@@ -24,6 +24,8 @@ inputs:
       position: 1
       prefix: -i
 
+  # TODO: Perhaps changing this to a string input instead of a file[] would enable the scattering behaviour for batch processing. Should test this out
+
   bands:
     type: File[]
     inputBinding:
