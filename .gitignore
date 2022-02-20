@@ -10,3 +10,6 @@ API/
 
 # Ignore pickle datafiles
 *.pickle
+
+# Ignore python venv
+env
