@@ -90,6 +90,7 @@ def ndvi(bands, index, recompute):
     # Check if the band arrays already exist
     bands_exist(bands, recompute)
     # Check if the index data already exists
+    print(pathlib.Path(index_out).with_suffix('.pickle'))
     if (not pathlib.Path(index_out).with_suffix('.pickle').exists()) or recompute:
         logging.info("Index matrix does not exist. Creating ...")
         # Open each bands datafile for index calculation.

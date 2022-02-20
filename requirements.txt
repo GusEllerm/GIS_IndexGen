@@ -91,7 +91,7 @@ ruamel.yaml==0.17.20; python_version >= '3'
 schema-salad==8.2.20220204150214; python_version >= '3.7'
 scipy==1.8.0
 sentinelsat==1.1.1
-setuptools==60.8.2; python_version >= '3.7'
+setuptools==60.9.2; python_version >= '3.7'
 shellescape==3.8.1
 six==1.16.0
 snuggs==1.4.7
