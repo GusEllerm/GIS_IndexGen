@@ -1,5 +1,3 @@
-from osgeo import gdal 
-import pathlib
 import rasterio
 import numpy as np
 import pickle
