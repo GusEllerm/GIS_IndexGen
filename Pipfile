@@ -75,6 +75,8 @@ geojson = "*"
 cwlref-runner = "*"
 numpy = "*"
 rasterio = "*"
+nodeenv = "*"
+npm = "*"
 
 [dev-packages]
 

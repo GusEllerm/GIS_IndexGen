@@ -55,7 +55,10 @@ mistune==0.8.4
 msgpack==1.0.3
 mypy-extensions==0.4.3
 networkx==2.6.3; python_version >= '3.7'
+nodeenv==1.6.0
+npm==0.1.1
 numpy==1.22.2
+optional-django==0.1.0
 packaging==21.3; python_version >= '3.6'
 pandas==1.4.0
 parso==0.8.3

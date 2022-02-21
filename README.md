@@ -1,33 +1,62 @@
-readme currently out of date
+# Project topology
 
-# MODIS example
+For this example CWL works as the computational engine, running the workflow and generating the tiff outputs. 
+Nodejs is used to publish these results as a webpage. 
+CWL_output contains workflow outputs, CWL contains the cwl code to execute workflows and the python scripts that actually do the computation. 
 
-## Data source
+# Running examples
 
-MODIS data is pulled from google earth api. 
-You will need a google account (for authen) which is regestered for dev work. 
+To run examples you will need to install the dependencies in requirements.txt in your local env. 
+testCL.txt contains example executions of the index workflows. Use these, or your own data to produce outputs. 
 
-## Files
+Using pipenv is encouraged as it is easy to install all required dependencies from the Pipfile. 
 
-MODIS.py contains high level code, pulling from MODIS_helper.py for image generation and some helper functions. 
-Currently, the image data is of an area in frace. This is manually set. 
+# TODO
 
-# Sentinal2 example
+Currently, the webserver is not ready for deployment however the CWL is reasonably complete. 
 
-This is the primary example which will be used for the prototype
+# Example index matrix calculations
 
-## Data source
+Assuming you are using pipenv, you can enter the venv using `pipenv shell`
+Currently, only four indexes are implemented:
+- NDVI
+- RECI
+- NDRE
+- GNDVI
 
-Data is pulled from the Copernicus Open Access Hub's (https://scihub.copernicus.eu) API.
-You need an account with Copernicus to access their API. 
+## Executing python scripts without CWL wrapper
+### index_def.py script -- generates both the pickle files from the data source (band matrix's) and the index pickle file (index matrix)
 
-Sentinal data is required to be of the highest processing level (2A) to maintain the proper file structure for processing. 
-Product stiching is not yet supported, so only single products can be processed at once. 
+`python3 CWL/Workflows/Modules/Scripts/index_def.py -i [name of index e.g. NDVI] -b [list of input bands space seperated]`
 
-## Files
+e.g. 
 
-IndexGen.py contains the high level code for calculating and outputting various GIS indexs. 
-IndexGen pulls from IndexGen_helper.py which contains each index's definition, and image output functions. 
-getData.py contains code to retrieve raw data (.SAFE format) from Copernicus's API. This uses the Sentinelsat package (https://sentinelsat.readthedocs.io/en/stable/api_overview.html).
-Details on authentication to Copernicus can be found in the docs. 
+`python3 CWL/Workflows/Modules/Scripts/index_def.py -i NDVI -b ~/Projects/LivePaper-prototype/CWL/Workflow_inputs/Data/S2A_MSIL2A_20220207T222541_N0400_R029_T59GMK_20220208T001202.SAFE/GRANULE/L2A_T59GMK_A034632_20220207T222543/IMG_DATA/R20m/T59GMK_20220207T222541_B04_20m.jp2 ~/Projects/LivePaper-prototype/CWL/Workflow_inputs/Data/S2A_MSIL2A_20220207T222541_N0400_R029_T59GMK_20220208T001202.SAFE/GRANULE/L2A_T59GMK_A034632_20220207T222543/IMG_DATA/R20m/T59GMK_20220207T222541_B8A_20m.jp2`
 
+### tiff_gen.py script -- generates a tiff image from an index matrix
+
+`python3 CWL/Workflows/Modules/Scripts/tiff_gen.py -i [index matrix] -c [color map]`
+
+e.g.
+
+`python3 CWL/WOrkflows/Modules/Scripts/tiff_gen.py -i ~/Projects/LivePaper-prototype/T59GMK_20220207T222541_NDVI_20m.pickle -c RdYlGn`
+
+A list of available colors can be found [here] (https://matplotlib.org/stable/tutorials/colors/colormaps.html)
+
+## Executing workflows with CWL wrappers
+
+Assuming you have a reference cwl-runner installed (included within dependencies) you should be able to access cwl-runner from your venv. 
+
+### Running single Modules
+
+The CWL is structured such that every workflow is built from two modules:
+- index_def.cwl
+- tiff_gen.cwl
+
+These modules can be run independently, or as a workflow. 
+
+To run the entire workflow:
+
+`cwl-runner CWL/Workflows/multi_workflow.cwl CWL/Workflow_inputs/multi_workflow.yaml`
+
+This will produce a tiff image for all four index's, as well as versions for each resolution possible (r10m, r20m)
