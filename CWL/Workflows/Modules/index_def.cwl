@@ -13,10 +13,10 @@ inputs:
     type: File
     default:
       class: File
-      location: /Users/eller/Projects/NDVI_Prototype/Scripts/index_def.py
+      location: Scripts/index_def.py
       secondaryFiles:
         - class: File
-          location: /Users/eller/Projects/NDVI_Prototype/Scripts/file_handling.py
+          location: Scripts/file_handling.py
 
   index:
     type: string

@@ -6,19 +6,17 @@ class: CommandLineTool
 baseCommand: ["python3"]
 arguments: [$(inputs.tiff_gen)]
 
-requirements:
-  ResourceRequirement:
-    ramMin: 4096
+requirements: []
 
 inputs:
   tiff_gen: 
     type: File
     default:
       class: File
-      location: /Users/eller/Projects/NDVI_Prototype/Scripts/tiff_gen.py
+      location: Scripts/tiff_gen.py
       secondaryFiles: 
         - class: File
-          location: /Users/eller/Projects/NDVI_Prototype/Scripts/file_handling.py
+          location: Scripts/file_handling.py
 
   index_array:
     type: File

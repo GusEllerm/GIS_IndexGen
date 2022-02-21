@@ -3,13 +3,10 @@
 *.npz
 
 # Ignore raw data files
-data/*.SAFE
+CWL/Workflow_inputs/Data/*.SAFE
 
 # Ignore key for API
 API/
 
 # Ignore pickle datafiles
 *.pickle
-
-# Ignore python venv
-env
