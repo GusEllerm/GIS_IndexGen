@@ -4,6 +4,8 @@ For this example CWL works as the computational engine, running the workflow and
 Nodejs is used to publish these results as a webpage. 
 CWL_output contains workflow outputs, CWL contains the cwl code to execute workflows and the python scripts that actually do the computation. 
 
+To run the webserver install the npm dependencies (`npm install`) and run npm start from top directory. Current webserver is listening on port 3000.
+
 # Running examples
 
 To run examples you will need to install the dependencies in requirements.txt in your local env. 

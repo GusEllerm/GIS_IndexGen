@@ -16,3 +16,9 @@ API/
 
 # Ignore python cache
 __pycache__
+
+# Ignore nodejs components
+node_modules
+build
+npm-debug.log
+.env
