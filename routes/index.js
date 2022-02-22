@@ -4,12 +4,9 @@ var router = express.Router();
 var fs = require('fs')
 var path = require('path')
 
-var files = fs.readdirSync('public/png')
-
-
-
 /* GET home page. */
 router.get('/', function(req, res, next) {
+  var files = fs.readdirSync('public/png')
   console.log(files)
   var pngs = files.filter(file => {
     return path.extname(file).toLowerCase() === '.png'
