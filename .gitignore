@@ -13,3 +13,6 @@ API/
 
 # Ignore macos specific file structure meta-data
 .DS_Store
+
+# Ignore python cache
+__pycache__
