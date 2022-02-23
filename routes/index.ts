@@ -17,6 +17,13 @@ router.get('/', function(req, res, next) {
     pngs_dir.push('png/'.concat(png))
   })
 
+  console.log(req.params)
+  console.log("TESTEST")
+  
+  if(req.query["compute_outputs"] == 1) {
+    console.log('button clicked')
+  }
+
   res.render('index', { 
     title: 'LivePaper',
     indexes: pngs_dir
