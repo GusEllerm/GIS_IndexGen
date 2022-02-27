@@ -4,8 +4,11 @@ block content
   h1= title
   p Welcome to #{title}
   h3= "re-compute outputs"
-  form(method='get' action='/')
-    button(name='compute_outputs' value=1) compute outputs
+  form(method='post' action='/')
+    button(name='compute_dataset' value=1) load_dataset_1 
+    button(name='compute_dataset' value=2) load_dataset_2
+    button(name='compute_dataset' value=3) load_dataset_3
+
   each index in indexes
     div(id='index')
         img(src=index)

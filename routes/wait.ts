@@ -5,7 +5,9 @@ var router = express.Router();
 
 /* GET users listing. */
 router.get('/', function(req: Request, res: Response, next: NextFunction) {
-  res.send('respond with a resource');
+    res.render('wait', { 
+        title: 'LivePaper: LOADING',
+    });  
 });
 
 module.exports = router;
