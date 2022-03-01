@@ -1,0 +1,29 @@
+// mixins/figure_output
+mixin figure_output(image, workflow_svg)
+  div(class='workflow-output')
+    div(class='tab')
+      button(class='tablinks' onclick="edit_workflow(event, 'Output-" + image + "')") Paper outputs 
+      button(class='tablinks' onclick="edit_workflow(event, 'Show-" + image + "')") Show workflow
+      button(class='tablinks' onclick="edit_workflow(event, 'Edit-" + image + "')") Edit workflow
+    div(class='tabcontent', id="Output-" + image, style="display: block;")
+      div(id='index')
+        img(src=image)
+    div(class='tabcontent', id='Show-' + image, style="display: none;")
+      div(id="workflow_svg")
+        object(type="image/svg+xml" data=workflow_svg)
+    div(class='tabcontent', id='Edit-' + image, style="display: none;")
+      p edit
+  script 
+    include ../../routes/workflow_edit.js
+    //-   #output.tabcontent
+    //-     div(id='index')
+    //-       img(src=image)
+    //-   #show.tabcontent 
+    //-     p testing 
+        //- #output.tabcontent
+        //-   div(id='index')
+        //-       img(src=image)
+        //- #show.tabcontent 
+        //-   p test
+
+

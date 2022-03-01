@@ -86,15 +86,17 @@ function execShellCommand(cmd: string) {
 async function runCalculation(res: Response, dataset: Number) {
   if (dataset == 1) {
     console.log('Calculating over dataset 1');
-    const calculate = await execShellCommand('pipenv shell; cd public/tiff/; python remove_tiff_output.py; cd ../; cd webp; python remove_png_files.py; cd ../; cd tiff/; python workflow_1.py');
+    const calculate = await execShellCommand('pipenv shell; cd public/tiff/; python remove_tiff_output.py; cd ../; cd webp; python remove_webp_files.py; cd ../; cd tiff/; python workflow_1.py');
     console.log(calculate);
+    const gen_svg = await execShellCommand('pipenv shell; cd public/svg/; python remove_svg_output.py; python multi_workflow.py; python workflow.py')
+    console.log(gen_svg)
   } else if (dataset == 2) {
     console.log('Calculating over dataset 2');
-    const calculate = await execShellCommand('pipenv shell; cd public/tiff/; python remove_tiff_output.py; cd ../; cd webp; python remove_png_files.py; cd ../; cd tiff/; python workflow_2.py');
+    const calculate = await execShellCommand('pipenv shell; cd public/tiff/; python remove_tiff_output.py; cd ../; cd webp; python remove_webp_files.py; cd ../; cd tiff/; python workflow_2.py');
     console.log(calculate);
   } else if (dataset == 3) {
     console.log('Calculating over dataset 3');
-    const calculate = await execShellCommand('pipenv shell; cd public/tiff/; python remove_tiff_output.py; cd ../; cd webp; python remove_png_files.py; cd ../; cd tiff/; python workflow_3.py');
+    const calculate = await execShellCommand('pipenv shell; cd public/tiff/; python remove_tiff_output.py; cd ../; cd webp; python remove_webp_files.py; cd ../; cd tiff/; python workflow_3.py');
     console.log(calculate);
   }
   const generate_webp = await gen_webp();
@@ -105,9 +107,13 @@ async function runCalculation(res: Response, dataset: Number) {
 /* GET home page. */
 router.get('/', function(req: Request, res: Response, next: NextFunction) {
   let webp_dir: string[] = get_webp();
+  let multi_workflow_svg = "svg/multi_workflow.svg"
+  let workflow_svg = "svg/workflow.svg"
   res.render('index', { 
     title: 'LivePaper',
-    indexes: webp_dir
+    indexes: webp_dir,
+    multi_workflow_svg: multi_workflow_svg,
+    workflow_svg: workflow_svg
   });  
 });
 
