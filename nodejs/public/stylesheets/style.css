@@ -32,10 +32,6 @@ a {
   background-color: aqua;
 }
 
-#full_workflow_svg {
-  width: 100%;
-}
-
 #full_workflow_svg > object {
   width: 100%;
 }
