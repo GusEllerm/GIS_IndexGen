@@ -13,6 +13,8 @@ testCL.txt contains example executions of the index workflows. Use these, or you
 
 Using pipenv is encouraged as it is easy to install all required dependencies from the Pipfile. 
 
+Graphviz will need to be installed. 
+
 # TODO
 
 Currently, the webserver is not ready for deployment however the CWL is reasonably complete. 
