@@ -1,4 +1,5 @@
-import {Request, Response, NextFunction, response} from 'express';
+import {Request, Response, NextFunction} from 'express';
+import { resolve } from 'path/posix';
 const { exec } = require('child_process')
 type Error = import('child_process').ExecException
 var sharp = require('sharp')
@@ -9,8 +10,15 @@ var router = express.Router();
 var fs = require('fs');
 var path = require('path');
 
-var CALCULATE = false;
+// Super simple blocking mechanism to prevent button spam
+var BLOCK = false;
 
+// delay function to deal with async problems
+function delay(time: number) {
+  return new Promise(resolve => setTimeout(resolve, time));
+}
+
+// Gets a list of webp stored within public/webp
 function get_webp(): string[] {
   console.log('Getting web-images');
   var files: string[] = fs.readdirSync('public/webp')
@@ -24,31 +32,7 @@ function get_webp(): string[] {
   return webp_dir;
 }
 
-function get_tiff(): string[] {
-  // Get tiff files for conversion to png
-  let files: string[] = fs.readdirSync('public/tiff')
-  let tiffs_dir: string[] = []
-  let tiffs: string[] = files.filter(file => {
-    return path.extname(file).toLowerCase() === '.tif'
-  })
-  tiffs.forEach(tiff => {
-    tiffs_dir.push('public/tiff/'.concat(tiff))
-  })
-  tiffs_dir.forEach(tiff => {
-    sharp(tiff)
-      .webp()
-      .toFile('public/webp/'.concat(path.parse(tiff).name, '.webp'))
-      .then(function(info: string) {
-        console.log(info)
-      })
-      .catch(function(err: Error) {
-        console.log(err)
-      })
-  })
-  console.log(tiffs_dir)
-  return tiffs_dir
-}
-
+// Generates webp by converting tiff artefacts (public/tiff) to webp artefacts (public/webp)
 function gen_webp() {
   return new Promise((resolve, reject) => {
     let files: string[] = fs.readdirSync('public/tiff')
@@ -71,6 +55,7 @@ function gen_webp() {
   })
 }
 
+// executes a shell command - used to run workflows through CWL
 function execShellCommand(cmd: string) {
   const exec = require('child_process').exec;
   return new Promise((resolve, reject) => {
@@ -83,7 +68,9 @@ function execShellCommand(cmd: string) {
   })
 }
 
-async function runCalculation(res: Response, dataset: Number) {
+// Runs workflows and generated artefacts for display on website.
+async function runCalculation(res: Response, req: Request, dataset: Number) {
+  BLOCK = true;
   if (dataset == 1) {
     console.log('Calculating over dataset 1');
     const calculate = await execShellCommand('pipenv shell; cd public/tiff/; python remove_tiff_output.py; cd ../; cd webp; python remove_webp_files.py; cd ../; cd tiff/; python workflow_1.py');
@@ -101,32 +88,42 @@ async function runCalculation(res: Response, dataset: Number) {
   }
   const generate_webp = await gen_webp();
   console.log(generate_webp);
-  res.redirect('/');
+  BLOCK = false;
+  console.log(generate_webp);
 }
+
 
 /* GET home page. */
 router.get('/', function(req: Request, res: Response, next: NextFunction) {
-  let webp_dir: string[] = get_webp();
-  let multi_workflow_svg = "svg/multi_workflow.svg"
-  let workflow_svg = "svg/workflow.svg"
-  res.render('index', { 
-    title: 'LivePaper',
-    indexes: webp_dir,
-    multi_workflow_svg: multi_workflow_svg,
-    workflow_svg: workflow_svg
-  });  
+  if (!BLOCK) {
+    let webp_dir: string[] = get_webp();
+    let multi_workflow_svg = "svg/multi_workflow.svg"
+    let workflow_svg = "svg/workflow.svg"
+    res.render('index', { 
+      title: 'LivePaper',
+      indexes: webp_dir,
+      multi_workflow_svg: multi_workflow_svg,
+      workflow_svg: workflow_svg
+    });  
+  } else {
+    console.log("Compiling new research artefacts")
+  }
 });
 
 /* POST home page */
 router.post('/', function(req: Request, res: Response, next: NextFunction) {
-  let webp_dir: string[] = get_webp();
-  if (req.body.compute_dataset == 1) {
-    runCalculation(res, req.body.compute_dataset)
-  } else if (req.body.compute_dataset == 2) {
-    runCalculation(res, req.body.compute_dataset)
-  } else if (req.body.compute_dataset == 3) {
-    runCalculation(res, req.body.compute_dataset)
-  }
+  if (!BLOCK) {
+    let webp_dir: string[] = get_webp();
+    if (req.body.compute_dataset == 1) {
+      runCalculation(res, req, req.body.compute_dataset).then(() => {delay(5000).then(() => {res.redirect('/')})})
+    } else if (req.body.compute_dataset == 2) {
+      runCalculation(res, req, req.body.compute_dataset).then(() => {delay(5000).then(() => {res.redirect('/')})})
+    } else if (req.body.compute_dataset == 3) {
+      runCalculation(res, req, req.body.compute_dataset).then(() => {delay(5000).then(() => {res.redirect('/')})})
+    }
+  } else {
+    console.log("Compiling new research artefacts")
+  } 
 });
 
 module.exports = router;
