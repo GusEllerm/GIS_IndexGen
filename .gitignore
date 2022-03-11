@@ -21,3 +21,6 @@ __pycache__
 node_modules
 build
 npm-debug.log
+
+# Ignore mytardis ingest data
+LP_compilation/Data_stages/tardis/Data

@@ -1,0 +1,63 @@
+index_ndvi_10m: NDVI
+bands_ndvi_10m:
+  - class: File
+    path: >-
+      /Users/eller/Projects/LivePaper-prototype/LP_compilation/Data_stages/tardis/Data/L2A_T59GMK_A034632_20220207T222543/R10m/T59GMK_20220207T222541_B04_10m.jp2
+  - class: File
+    path: >-
+      /Users/eller/Projects/LivePaper-prototype/LP_compilation/Data_stages/tardis/Data/L2A_T59GMK_A034632_20220207T222543/R10m/T59GMK_20220207T222541_B08_10m.jp2
+color_ndvi_10m: RdYlGn
+index_ndvi_20m: NDVI
+bands_ndvi_20m:
+  - class: File
+    path: >-
+      /Users/eller/Projects/LivePaper-prototype/LP_compilation/Data_stages/tardis/Data/L2A_T59GMK_A034632_20220207T222543/R20m/T59GMK_20220207T222541_B04_20m.jp2
+  - class: File
+    path: >-
+      /Users/eller/Projects/LivePaper-prototype/LP_compilation/Data_stages/tardis/Data/L2A_T59GMK_A034632_20220207T222543/R20m/T59GMK_20220207T222541_B8A_20m.jp2
+color_ndvi_20m: RdYlGn
+index_gndvi_10m: GNDVI
+bands_gndvi_10m:
+  - class: File
+    path: >-
+      /Users/eller/Projects/LivePaper-prototype/LP_compilation/Data_stages/tardis/Data/L2A_T59GMK_A034632_20220207T222543/R10m/T59GMK_20220207T222541_B03_10m.jp2
+  - class: File
+    path: >-
+      /Users/eller/Projects/LivePaper-prototype/LP_compilation/Data_stages/tardis/Data/L2A_T59GMK_A034632_20220207T222543/R10m/T59GMK_20220207T222541_B08_10m.jp2
+color_gndvi_10m: RdYlGn
+index_gndvi_20m: GNDVI
+bands_gndvi_20m:
+  - class: File
+    path: >-
+      /Users/eller/Projects/LivePaper-prototype/LP_compilation/Data_stages/tardis/Data/L2A_T59GMK_A034632_20220207T222543/R20m/T59GMK_20220207T222541_B03_20m.jp2
+  - class: File
+    path: >-
+      /Users/eller/Projects/LivePaper-prototype/LP_compilation/Data_stages/tardis/Data/L2A_T59GMK_A034632_20220207T222543/R20m/T59GMK_20220207T222541_B8A_20m.jp2
+color_gndvi_20m: RdYlGn
+index_ndre_20m: NDRE
+bands_ndre_20m:
+  - class: File
+    path: >-
+      /Users/eller/Projects/LivePaper-prototype/LP_compilation/Data_stages/tardis/Data/L2A_T59GMK_A034632_20220207T222543/R20m/T59GMK_20220207T222541_B05_20m.jp2
+  - class: File
+    path: >-
+      /Users/eller/Projects/LivePaper-prototype/LP_compilation/Data_stages/tardis/Data/L2A_T59GMK_A034632_20220207T222543/R20m/T59GMK_20220207T222541_B8A_20m.jp2
+color_ndre_20m: RdYlGn
+index_reci_10m: RECI
+bands_reci_10m:
+  - class: File
+    path: >-
+      /Users/eller/Projects/LivePaper-prototype/LP_compilation/Data_stages/tardis/Data/L2A_T59GMK_A034632_20220207T222543/R10m/T59GMK_20220207T222541_B04_10m.jp2
+  - class: File
+    path: >-
+      /Users/eller/Projects/LivePaper-prototype/LP_compilation/Data_stages/tardis/Data/L2A_T59GMK_A034632_20220207T222543/R10m/T59GMK_20220207T222541_B08_10m.jp2
+color_reci_10m: RdYlGn
+index_reci_20m: RECI
+bands_reci_20m:
+  - class: File
+    path: >-
+      /Users/eller/Projects/LivePaper-prototype/LP_compilation/Data_stages/tardis/Data/L2A_T59GMK_A034632_20220207T222543/R20m/T59GMK_20220207T222541_B04_20m.jp2
+  - class: File
+    path: >-
+      /Users/eller/Projects/LivePaper-prototype/LP_compilation/Data_stages/tardis/Data/L2A_T59GMK_A034632_20220207T222543/R20m/T59GMK_20220207T222541_B8A_20m.jp2
+color_reci_20m: RdYlGn

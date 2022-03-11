@@ -23,30 +23,6 @@ interface Error {
   message?: string;
 }
 
-// TODO: make this a callback function
-
-// Get tiff files for conversion to png
-var files: string[] = fs.readdirSync('public/tiff')
-var tiffs: string[] = files.filter(file => {
-  return path.extname(file).toLowerCase() === '.tif'
-})
-tiffs.forEach(tiff => {
-  tiffs_dir.push('public/tiff/'.concat(tiff))
-})
-tiffs_dir.forEach(tiff => {
-  sharp(tiff)
-    .webp()
-    .toFile('public/webp/'.concat(path.parse(tiff).name, '.webp'))
-    .then(function(info: string) {
-      console.log(info)
-    })
-    .catch(function(err: Error) {
-      console.log(err)
-    })
-})
-
-console.log(tiffs_dir)
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -77,6 +53,5 @@ app.use(function(err: Error, req: Request, res: Response, next: NextFunction) {
   res.status(err.status || 500);
   res.render('error');
 });
-
 
 module.exports = app;

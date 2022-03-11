@@ -1,6 +1,4 @@
 import {Request, Response, NextFunction} from 'express';
-import { resolve } from 'path/posix';
-const { exec } = require('child_process')
 type Error = import('child_process').ExecException
 var sharp = require('sharp')
 
@@ -113,7 +111,6 @@ router.get('/', function(req: Request, res: Response, next: NextFunction) {
 /* POST home page */
 router.post('/', function(req: Request, res: Response, next: NextFunction) {
   if (!BLOCK) {
-    let webp_dir: string[] = get_webp();
     if (req.body.compute_dataset == 1) {
       runCalculation(res, req, req.body.compute_dataset).then(() => {delay(5000).then(() => {res.redirect('/')})})
     } else if (req.body.compute_dataset == 2) {

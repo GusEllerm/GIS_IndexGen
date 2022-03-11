@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "@types/better-sqlite3": "^7.5.0",
+    "better-sqlite3": "^7.5.0",
+    "write-yaml-file": "^4.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.21"
+  }
+}
