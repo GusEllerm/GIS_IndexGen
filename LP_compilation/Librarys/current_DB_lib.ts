@@ -88,44 +88,49 @@ export function initialise_currentDB(DataDir: string) {
     const db = new sqlite(DB_NAME, {verbose: console.log});
 
     // Add data table 
-    db.prepare('CREATE TABLE data (Data_name varchar UNIQUE NOT NULL PRIMARY KEY)').run();
-    db.prepare('INSERT INTO data (Data_name) VALUES(@data_name)').run({ data_name: DataDir});
+    db.prepare('CREATE TABLE data (data_id INTEGER PRIMARY KEY AUTOINCREMENT, data_name VARCHAR UNIQUE NOT NULL)').run();
+    db.prepare('INSERT INTO data (data_name) VALUES(@data_name)').run({ data_name: DataDir });
     // Add resolution table
-    db.prepare('CREATE TABLE resolution (resolution varchar UNIQUE NOT NULL PRIMARY KEY, Data_name varchar NOT NULL, FOREIGN KEY(Data_name) REFERENCES data)').run();
-    const insert_res = db.prepare('INSERT INTO resolution (resolution, Data_name) values(@resolution, @data_name)');
+    db.prepare('CREATE TABLE resolution (resolution_id INTEGER PRIMARY KEY AUTOINCREMENT, resolution varchar UNIQUE NOT NULL, data_id INTEGER NOT NULL, FOREIGN KEY(data_id) REFERENCES data)').run();
+    const insert_res = db.prepare('INSERT INTO resolution (resolution, data_id) values(@resolution, @data_id)');
 
     const insertResolutions = db.transaction((resolutions: any[]) => {
         for (const resolution of resolutions) insert_res.run(resolution);
     });
+    const data_id = db.prepare('SELECT data_id FROM data WHERE Data_name = ?').all(DataDir)[0].data_id;
 
     insertResolutions([
-        { resolution: "R10m", data_name: DataDir },
-        { resolution: "R20m", data_name: DataDir },
-        { resolution: "R60m", data_name: DataDir },
+        { resolution: "R10m", data_id: data_id },
+        { resolution: "R20m", data_id: data_id },
+        { resolution: "R60m", data_id: data_id },
     ]);
 
-    db.prepare('CREATE TABLE band (band_name varchar UNIQUE NOT NULL PRIMARY KEY, band_short varchar NOT NULL, syslink varchar NOT NULL, resolution varchar NOT NULL, FOREIGN KEY(resolution) REFERENCES resolution)').run();
-    const insert_band = db.prepare('INSERT INTO band (band_name, band_short, syslink, resolution) VALUES(@band_name, @band_short, @syslink, @resolution)');
+    db.prepare('CREATE TABLE band (band_id INTEGER PRIMARY KEY AUTOINCREMENT, band_name varchar UNIQUE NOT NULL, band_short varchar NOT NULL, syslink varchar UNIQUE NOT NULL, resolution_id INTEGER NOT NULL, FOREIGN KEY(resolution_id) REFERENCES resolution)').run();
+    const insert_band = db.prepare('INSERT INTO band (band_name, band_short, syslink, resolution_id) VALUES(@band_name, @band_short, @syslink, @resolution_id)');
 
     const bands: string[][] = getBands(DataDir);
+    const resolution_id = db.prepare('SELECT resolution_id FROM resolution WHERE resolution = ?');
+    const r10m_id = resolution_id.all('R10m')[0].resolution_id;
+    const r20m_id = resolution_id.all('R20m')[0].resolution_id;
+    const r60m_id = resolution_id.all('R60m')[0].resolution_id;
 
     // Input r10m band
     for (const band in bands[0]) {
         let short_name = bands[0][band].split("_")[2];
         let syslink = path.join(DATA_DIR, DataDir, "R10m/", bands[0][band]);
-        insert_band.run({ band_name: bands[0][band], band_short: short_name, syslink: syslink, resolution: "R10m" });
+        insert_band.run({ band_name: bands[0][band], band_short: short_name, syslink: syslink, resolution_id: r10m_id });
     }
     // Input r20m band
     for (const band in bands[1]) {
         let short_name = bands[1][band].split("_")[2];
         let syslink = path.join(DATA_DIR, DataDir, "R20m/", bands[1][band]);
-        insert_band.run({ band_name: bands[1][band], band_short: short_name, syslink: syslink, resolution: "R20m" });
+        insert_band.run({ band_name: bands[1][band], band_short: short_name, syslink: syslink, resolution_id: r20m_id });
     }
     // Input r60m band
     for (const band in bands[2]) {
         let short_name = bands[2][band].split("_")[2];
         let syslink = path.join(DATA_DIR, DataDir, "R60m/", bands[2][band]);
-        insert_band.run({ band_name: bands[2][band], band_short: short_name, syslink: syslink, resolution: "R60m" });
+        insert_band.run({ band_name: bands[2][band], band_short: short_name, syslink: syslink, resolution_id: r60m_id });
     }
 }
 

@@ -6,7 +6,8 @@ const yaml = require('write-yaml-file');
 import DatabaseConstructor, { Database } from "better-sqlite3";
 
 const DB_NAME = path.join(__dirname, "../", "DB/", "current_DB.db");
-const YAML_DIR = path.join(__dirname, "../", "Workflow_IO/", "Inputs/", "yaml")
+const YAML_DIR_FULL = path.join(__dirname, "../", "Workflow_IO/", "Full/", "Inputs/", "yaml")
+const YAML_DIR_PM = path.join(__dirname, "../", "Workflow_IO/", "Piecemeal/", "Inputs", "yaml")
 const FLOW_FULL = "full_workflow.yaml"
 
 function format_bands(bands: any[]) {
@@ -18,11 +19,24 @@ function format_bands(bands: any[]) {
     return formated;
 }
 
-export function gen_piecemeal_workflow(index: string, bands: string[], color: string) {
+export function gen_piecemeal_workflow(index: string, resolution: string, bands: string[], color: string) {
 
     const db = new sqlite(DB_NAME, { verbose: console.log, readonly: true, fileMustExist: true });
-    // TODO
-    return "placeholder"
+    
+    console.log("\n - Retreiving bands from database - \n");
+    // Currently hard coded for two bands however should allow for a variable number as some indexes can use three or more bands. 
+    const get_two_bands = db.prepare('SELECT syslink FROM band WHERE resolution_id = (SELECT resolution_id FROM resolution WHERE resolution = ?) AND band_short in (?, ?);');
+
+    const piecemeal_arguments = {
+        index: index,
+        bands: format_bands(get_two_bands.all(resolution, bands[0], bands[1])),
+        color: color
+    }
+
+    let file_name = path.join(YAML_DIR_PM, index.concat("_",resolution,".yaml"));    
+    yaml(file_name, piecemeal_arguments);
+    console.log("\n - Piecemeal workflow " + file_name + " generated - \n");
+    return path.join(file_name);
 }
 
 export function gen_full_workflow() {
@@ -32,7 +46,9 @@ export function gen_full_workflow() {
     const db = new sqlite(DB_NAME, { verbose: console.log, readonly: true, fileMustExist: true });
 
     console.log("\n - Retrieving bands from database - \n");
-    const get_two_bands = db.prepare('SELECT syslink FROM band WHERE resolution = ? AND band_short in (?, ?);');
+    const get_two_bands = db.prepare('SELECT syslink FROM band WHERE resolution_id = (SELECT resolution_id FROM resolution WHERE resolution = ?) AND band_short in (?, ?);')
+
+    console.log(get_two_bands.all('R10m', 'B04', 'B08'));
     
     const ndvi_10m_arguments = {
         index_ndvi_10m: "NDVI",
@@ -86,11 +102,11 @@ export function gen_full_workflow() {
         ...reci_20m_arguments,
     }
 
-    yaml(path.join(YAML_DIR, FLOW_FULL), full_workflow_arguments);
+    yaml(path.join(YAML_DIR_FULL, FLOW_FULL), full_workflow_arguments);
+    console.log("\n - Full workflow YAML generated - \n");
+    return path.join(YAML_DIR_FULL, FLOW_FULL);
 
-    console.log("\n - Full workflow YAML generated - \n")
-
-    return path.join(YAML_DIR, FLOW_FULL)
+    return
 
 }
 
