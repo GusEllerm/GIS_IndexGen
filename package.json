@@ -2,6 +2,7 @@
   "dependencies": {
     "@types/better-sqlite3": "^7.5.0",
     "better-sqlite3": "^7.5.0",
+    "sharp": "^0.30.3",
     "write-yaml-file": "^4.2.0"
   },
   "devDependencies": {

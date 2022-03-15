@@ -6,11 +6,11 @@ block content
   
   h1= title
   p Welcome to #{title}
-  h3 re-compute outputs
-  form(method='post' action='/')
-    button(name='compute_dataset' value=1) load_dataset_1 
-    button(name='compute_dataset' value=2) load_dataset_2
-    button(name='compute_dataset' value=3) load_dataset_3
+  //- h3 re-compute outputs
+  //- form(method='post' action='/')
+  //-   button(name='compute_dataset' value=1) load_dataset_1 
+  //-   button(name='compute_dataset' value=2) load_dataset_2
+  //-   button(name='compute_dataset' value=3) load_dataset_3
   p This recomputes the entire paper with the selected dataset. You can recompute individual workflow outputs by selecting the workflow edit option on a single workflow output.
   h4 Full Workflow
   div(id="full_workflow_svg")

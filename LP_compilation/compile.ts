@@ -1,7 +1,7 @@
-import { initialise_currentDB, migrate_database } from "./Librarys/current_DB_lib";
-import { initialise_workflowDB, add_input, add_artefact, add_workflows } from "./Librarys/workflow_DB_lib";
-
+import { initialise_workflowDB, add_input, compute_artefact, compute_web_interface } from "./Librarys/workflow_DB_lib";
 import { gen_full_workflow, gen_piecemeal_workflow } from "./Librarys/gen_yaml_lib";
+import { resolve } from "path";
+const exec = require('child_process').exec;
 
 // assumes static workflow definitions
 // assumes artefact identity understood and defined by the author - e.g. they know they are generating x artefacts with names z,t,v
@@ -28,16 +28,22 @@ const PM_RES = {
 }
 const COLOR = 'RdYlGn';
 
-function init() {
+const DATA_SETS = {
+    1: "L2A_T59GMK_A034632_20220207T222543/",
+    2: "L2A_T59GLL_A034632_20220207T222543/"
+}
 
-    // // Initialize databases
-    initialise_currentDB("L2A_T59GMK_A034632_20220207T222543/");
-    initialise_workflowDB();
+export function init_DB(data: string) {
+    // Initialize databases
+    return new Promise(resolve => {
+        // initialise_currentDB(data);
+        initialise_workflowDB(data);
+        // populate_workflow();   
+        resolve('\n - current DB and workflow DB initalized - \n')
+    }) 
+}
 
-    // gen_full_workflow();
-
-    // Add full workflow, piecemeal workflow and yaml inputs for each job
-    add_workflows();
+function add_inputs() {
     add_input(gen_full_workflow()); // full workflow input
     // add piecemeal workflow inputs
     add_input(gen_piecemeal_workflow('NDVI', PM_RES[10], PM_INDEXS.NDVI_r10m, COLOR));
@@ -47,36 +53,70 @@ function init() {
     add_input(gen_piecemeal_workflow('GNDVI', PM_RES[10], PM_INDEXS.GNDVI_r10m, COLOR));
     add_input(gen_piecemeal_workflow('GNDVI', PM_RES[20], PM_INDEXS.GNDVI_r20m, COLOR));
     add_input(gen_piecemeal_workflow('NDRE', PM_RES[20], PM_INDEXS.NDRE_r20m, COLOR));
-
-    // compute artefacts 
-    // FULL
-    add_artefact(WORKFLOWS.full,'full_workflow.yaml').then((result) => {
-        console.log(result)
-    });
-    // PIECEMEAL
-    add_artefact(WORKFLOWS.pm, 'NDVI_R10m.yaml').then((result) => {
-        console.log(result)
-    });
-    add_artefact(WORKFLOWS.pm, 'NDVI_R20m.yaml').then((result) => {
-        console.log(result)
-    });
-    add_artefact(WORKFLOWS.pm, 'RECI_R10m.yaml').then((result) => {
-        console.log(result)
-    });
-    add_artefact(WORKFLOWS.pm, 'RECI_R20m.yaml').then((result) => {
-        console.log(result)
-    });
-    add_artefact(WORKFLOWS.pm, 'GNDVI_R10m.yaml').then((result) => {
-        console.log(result)
-    });
-    add_artefact(WORKFLOWS.pm, 'GNDVI_R20m.yaml').then((result) => {
-        console.log(result)
-    });
-    add_artefact(WORKFLOWS.pm, 'NDRE_R20m.yaml').then((result) => {
-        console.log(result)
-    });
-
 }
 
-init();
+
+function compute_artefacts() {
+    const compute = compute_artefact;
+    compute_artefact(WORKFLOWS.full,'full_workflow.yaml').then((result) => {
+        return compute_artefact(WORKFLOWS.pm, 'NDVI_R10m.yaml');
+    })
+    .then((result) => {
+        return compute_artefact(WORKFLOWS.pm, 'NDVI_R20m.yaml');
+    })
+    .then((result) => {
+        return compute_artefact(WORKFLOWS.pm, 'RECI_R10m.yaml');
+    })
+    .then((result) => {
+        return compute_artefact(WORKFLOWS.pm, 'RECI_R20m.yaml');
+    })
+    .then((result) => {
+        return compute_artefact(WORKFLOWS.pm, 'GNDVI_R10m.yaml');
+    })
+    .then((result) => {
+        return compute_artefact(WORKFLOWS.pm, 'GNDVI_R20m.yaml');
+    })
+    .then((result) => {
+        return compute_artefact(WORKFLOWS.pm, 'NDRE_R20m.yaml');
+    })
+    .then((result) => {
+        compute_web_interface()
+    }) 
+}
+
+
+
+export function migrate(data: string) {
+    // current migration is just a hard reset and init with new data
+    // TODO: add the ability to retain information on previous runs 
+    // TODO: be able to migrate while still serving previous data untill new data is ready
+    // compute_web_interface();
+    
+    let child = exec('python Librarys/reset.py', (err: any, stdout: any, stderr: any) => {
+        if (err) {
+            console.log("ERROR")
+            console.log(err)
+            return
+        }
+        // console.log(stdout)
+    });
+    
+    child.on('exit', function() {
+        init_DB(data).then(result => {
+            console.log(result)
+            add_inputs();
+            compute_artefacts();
+            resolve("done");
+            // compute_web_interface();
+        });
+    })
+}
+
+
+
+
+migrate(DATA_SETS[1]);
+
+
+
 

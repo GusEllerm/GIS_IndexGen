@@ -5,9 +5,9 @@ const yaml = require('write-yaml-file');
 
 import DatabaseConstructor, { Database } from "better-sqlite3";
 
-const DB_NAME = path.join(__dirname, "../", "DB/", "current_DB.db");
-const YAML_DIR_FULL = path.join(__dirname, "../", "Workflow_IO/", "Full/", "Inputs/", "yaml")
-const YAML_DIR_PM = path.join(__dirname, "../", "Workflow_IO/", "Piecemeal/", "Inputs", "yaml")
+const DB_NAME = path.join(__dirname, "../DB/workflow_DB.db");
+const YAML_DIR_FULL = path.join(__dirname, "../Workflow_IO/Full/Inputs/yaml")
+const YAML_DIR_PM = path.join(__dirname, "../Workflow_IO/Piecemeal/Inputs/yaml")
 const FLOW_FULL = "full_workflow.yaml"
 
 function format_bands(bands: any[]) {
