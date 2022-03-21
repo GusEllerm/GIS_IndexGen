@@ -5,7 +5,7 @@ const yaml = require('write-yaml-file');
 
 import DatabaseConstructor, { Database } from "better-sqlite3";
 
-const DB_NAME = path.join(__dirname, "../DB/workflow_DB.db");
+const WORKFLOW_DB = path.join(__dirname, "../DB/workflow_DB.db");
 const YAML_DIR_FULL = path.join(__dirname, "../Workflow_IO/Full/Inputs/yaml")
 const YAML_DIR_PM = path.join(__dirname, "../Workflow_IO/Piecemeal/Inputs/yaml")
 const FLOW_FULL = "full_workflow.yaml"
@@ -21,7 +21,7 @@ function format_bands(bands: any[]) {
 
 export function gen_piecemeal_workflow(index: string, resolution: string, bands: string[], color: string) {
 
-    const db = new sqlite(DB_NAME, { verbose: console.log, readonly: true, fileMustExist: true });
+    const db = new sqlite(WORKFLOW_DB, { verbose: console.log, readonly: true, fileMustExist: true });
     
     console.log("\n - Retreiving bands from database - \n");
     // Currently hard coded for two bands however should allow for a variable number as some indexes can use three or more bands. 
@@ -43,7 +43,7 @@ export function gen_full_workflow() {
     // Generates yaml input for full workflow execution from data found in the current_DB
 
     // check current_DB exists and open
-    const db = new sqlite(DB_NAME, { verbose: console.log, readonly: true, fileMustExist: true });
+    const db = new sqlite(WORKFLOW_DB, { verbose: console.log, readonly: true, fileMustExist: true });
 
     console.log("\n - Retrieving bands from database - \n");
     const get_two_bands = db.prepare('SELECT syslink FROM band WHERE resolution_id = (SELECT resolution_id FROM resolution WHERE resolution = ?) AND band_short in (?, ?);')

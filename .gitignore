@@ -24,3 +24,12 @@ npm-debug.log
 
 # Ignore mytardis ingest data
 LP_compilation/Data_stages/tardis/Data
+
+# ignore webp images
+*.webp
+
+# ignore compressed files
+*.zip
+
+# Ignore generated svg files
+*.svg

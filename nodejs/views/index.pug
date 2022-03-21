@@ -18,5 +18,5 @@ block content
   h3 Workflow outputs
   p individual workflow outputs with configurable inputs
   div(id="workflow-container")
-    each image in indexes
-      +figure_output(image, workflow_svg)
+    each artefact in artefacts
+      +figure_output(artefact.primary.syslink, artefact.secondary, artefact.svg, num_artefacts)

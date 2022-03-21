@@ -1,6 +1,6 @@
 import { initialise_workflowDB, add_input, compute_artefact, compute_web_interface } from "./Librarys/workflow_DB_lib";
 import { gen_full_workflow, gen_piecemeal_workflow } from "./Librarys/gen_yaml_lib";
-import { resolve } from "path";
+import { init_historicalDB, migrate_data } from "./Librarys/history_DB_lib"
 const exec = require('child_process').exec;
 
 // assumes static workflow definitions
@@ -84,32 +84,56 @@ function compute_artefacts() {
     }) 
 }
 
-
-
-export function migrate(data: string) {
+export async function migrate(data: string) {
     // current migration is just a hard reset and init with new data
     // TODO: add the ability to retain information on previous runs 
     // TODO: be able to migrate while still serving previous data untill new data is ready
     // compute_web_interface();
-    
-    let child = exec('python Librarys/reset.py', (err: any, stdout: any, stderr: any) => {
-        if (err) {
-            console.log("ERROR")
-            console.log(err)
-            return
-        }
-        // console.log(stdout)
-    });
-    
-    child.on('exit', function() {
-        init_DB(data).then(result => {
-            console.log(result)
-            add_inputs();
-            compute_artefacts();
-            resolve("done");
-            // compute_web_interface();
+    await init_historicalDB();
+    await migrate_data().then((response) => {
+        console.log(response)
+        let child = exec('python Librarys/reset.py', (err: any, stdout: any, stderr: any) => {
+            if (err) {
+                console.log("ERROR")
+                console.log(err)
+                return
+            }
+            // console.log(stdout)
         });
+        
+        child.on('exit', function() {
+            init_DB(data).then(result => {
+                console.log(result)
+                add_inputs();
+                compute_artefacts();
+                // compute_web_interface();
+            });
+        })
     })
+    
+
+ 
+
+    // historical_migration().then(result => {
+    //     console.log(result)
+    //     let child = exec('python Librarys/reset.py', (err: any, stdout: any, stderr: any) => {
+    //         if (err) {
+    //             console.log("ERROR")
+    //             console.log(err)
+    //             return
+    //         }
+    //         // console.log(stdout)
+    //     });
+        
+    //     child.on('exit', function() {
+    //         init_DB(data).then(result => {
+    //             console.log(result)
+    //             add_inputs();
+    //             compute_artefacts();
+    //             // compute_web_interface();
+    //         });
+    //     })
+    // })
 }
 
 

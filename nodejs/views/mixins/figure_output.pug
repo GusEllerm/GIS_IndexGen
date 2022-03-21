@@ -1,18 +1,25 @@
 // mixins/figure_output
-mixin figure_output(image, workflow_svg)
+mixin figure_output(image, secondary_files, workflow_svg, length)
   div(class='workflow-output')
     div(class='tab')
-      button(class='tablinks' onclick="edit_workflow(event, 'Output-" + image + "')") Paper outputs 
+      button(class='tablinks' onclick="edit_workflow(event, 'Output-" + image + "')") Primary Output  
+      button(class='tablinks' onclick="edit_workflow(event, 'SecondaryOutput-" + image + "')") Secondary Output
       button(class='tablinks' onclick="edit_workflow(event, 'Show-" + image + "')") Show workflow
-      button(class='tablinks' onclick="edit_workflow(event, 'Edit-" + image + "')") Edit workflow
+      button(class='tablinks' onclick="edit_workflow(event, 'job-" + image + "')") Run workflow
     div(class='tabcontent', id="Output-" + image, style="display: block;")
       div(id='index')
         img(src=image)
+      p Fusce quis lorem vel magna dictum porta at sed metus. Mauris vitae ante nisi. Nam tellus ante, finibus molestie mollis et, interdum sed dui. Aliquam molestie pharetra mi, non imperdiet mauris faucibus non. Nullam molestie, ipsum id fringilla eleifend, sapien sapien tempus dolor, quis aliquet augue dolor ut libero. Duis tempus nec tellus ultricies tempor. Sed cursus ex vitae nunc sollicitudin placerat. Donec tincidunt ex eget quam sagittis rhoncus ut nec quam. Quisque quis ullamcorper nisi, non vestibulum felis. Donec id vulputate risus, eget convallis risus. Sed ac efficitur quam. Pellentesque aliquam tellus quis maximus aliquet. Donec nibh justo, egestas a nunc eget, rutrum commodo enim. Phasellus interdum sed turpis nec gravida. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla venenatis mi id ante blandit maximus.
     div(class='tabcontent', id='Show-' + image, style="display: none;")
       div(id="workflow_svg")
         object(type="image/svg+xml" data=workflow_svg)
-    div(class='tabcontent', id='Edit-' + image, style="display: none;")
-      p edit
+    div(class='tabcontent', id='SecondaryOutput-' + image, style="display: none;")
+      each artefact in secondary_files 
+        ul 
+          li
+            a(href=artefact.syslink)= artefact.name
+    div(class='tabcontent', id='job-' + image, style="display: none;")
+      p will provide a form to generate and run a yaml job
   script 
     include ../../routes/workflow_edit.js
 

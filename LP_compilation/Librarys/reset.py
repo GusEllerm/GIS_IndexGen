@@ -8,11 +8,12 @@ for directory in image_directories:
     path = os.path.join(image_directory, directory)
     shutil.rmtree(path)
 
-db_directory = os.path.join(os.path.dirname(__file__), "../", "DB/")
-db_files = os.listdir(db_directory)
-for file in db_files:
-    path = os.path.join(db_directory, file)
-    os.remove(path)
+try:
+    workflow_DB = os.path.join(os.path.dirname(__file__), "../", "DB/", "workflow_DB.db")
+    os.remove(workflow_DB)
+except: 
+    print("Workflow DB does not exist")
+
 
 yaml_directory = os.path.join(os.path.dirname(__file__), "../", "Workflow_IO/", "Full/", "Inputs/", "yaml/")
 yaml_files = os.listdir(yaml_directory)
