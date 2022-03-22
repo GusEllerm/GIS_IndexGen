@@ -1,0 +1,35 @@
+extends layout
+
+
+block content
+
+  p Welcome to #{title}
+  for set in historical_artefacts
+    div(class="artefact_history_item")
+      div(class="current_artefact")
+        img(src=set.syslink) 
+        div(class="artefact_description") 
+          table 
+            tr 
+              th Name
+            tr 
+              td 
+                a(href=set.syslink)= set.short_name
+
+      div(class="historical_artefacts")
+        for artefact in set.historical_versions 
+          div(class="historic_artefact")
+            img(src=artefact.syslink)
+            div(class="artefact_description")
+              table 
+                tr 
+                  th Name 
+                  th Data_set
+                  th Time
+                tr 
+                  td 
+                    a(href=artefact.syslink)= artefact.short_name
+                  td= artefact.data_set
+                  td= artefact.datetime
+  script 
+    include ../public/javascripts/redirect.js

@@ -4,7 +4,6 @@ extends layout
 block content
   include mixins/figure_output
   
-  h1= title
   p Welcome to #{title}
   //- h3 re-compute outputs
   //- form(method='post' action='/')
@@ -20,3 +19,6 @@ block content
   div(id="workflow-container")
     each artefact in artefacts
       +figure_output(artefact.primary.syslink, artefact.secondary, artefact.svg, num_artefacts)
+  
+  script 
+    include ../public/javascripts/redirect.js

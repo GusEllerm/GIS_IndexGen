@@ -15,12 +15,12 @@ mixin figure_output(image, secondary_files, workflow_svg, length)
         object(type="image/svg+xml" data=workflow_svg)
     div(class='tabcontent', id='SecondaryOutput-' + image, style="display: none;")
       each artefact in secondary_files 
-        ul 
-          li
-            a(href=artefact.syslink)= artefact.name
+          ul 
+            li
+              a(href=artefact.syslink)= artefact.name
     div(class='tabcontent', id='job-' + image, style="display: none;")
       p will provide a form to generate and run a yaml job
   script 
-    include ../../routes/workflow_edit.js
+    include ../../public/javascripts/workflow_edit.js
 
 

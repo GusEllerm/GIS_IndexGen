@@ -92,7 +92,7 @@ export async function migrate(data: string) {
     await init_historicalDB();
     await migrate_data().then((response) => {
         console.log(response)
-        let child = exec('python Librarys/reset.py', (err: any, stdout: any, stderr: any) => {
+        let child = exec('python Librarys/softReset.py', (err: any, stdout: any, stderr: any) => {
             if (err) {
                 console.log("ERROR")
                 console.log(err)

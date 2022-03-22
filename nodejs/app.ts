@@ -8,15 +8,11 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index.ts');
-var usersRouter = require('./routes/users.ts');
-var waitRouter = require('./routes/wait.ts');
+var historyRouter = require('./routes/history.ts');
 
-var fs = require('fs');
 var path = require('path');
-var sharp = require('sharp')
 
 var app = express();
-let tiffs_dir: string[] = []
 
 interface Error {
   status?: number;
@@ -36,8 +32,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, "../LP_compilation/")))
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/wait', waitRouter)
+app.use('/history', historyRouter);
 
 
 // catch 404 and forward to error handler

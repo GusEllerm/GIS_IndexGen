@@ -3,5 +3,22 @@ html
   head
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
+    title Pug Responsive Navbar
+    meta(charset='utf-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+    link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Lato&display=swap')
+    link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')  
+    nav
+      div(class="title") 
+        h3= title
+      nav_list
+        ul
+          li
+            form(action="/" method="GET")
+              a(onclick="this.closest('form').submit();return false;") Live Paper
+          li
+            form(action="/history" method="GET")
+              a(onclick="this.closest('form').submit();return false;") History
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js')
   body
     block content

@@ -1,9 +1,7 @@
-import e, {Request, Response, NextFunction} from 'express';
+import {Request, Response, NextFunction} from 'express';
 const sqlite = require('better-sqlite3');
-const sharp = require('sharp')
 const express = require('express');
 const router = express.Router();
-const fs = require('fs');
 const path = require('path');
 
 const WORKFLOW_DB = path.join(__dirname, "../../LP_compilation/DB/workflow_DB.db")
@@ -93,7 +91,7 @@ router.get('/', function(req: Request, res: Response, next: NextFunction) {
   const artefacts = compile_artefacts
   artefacts().then(artefacts => {
     res.render('index', {
-      title: 'LivePaper V2',
+      title: 'LivePaper V3',
       artefacts: artefacts,
       num_artefacts: 7,
       multi_workflow_svg: format_directory(multi_workflow_svg),
@@ -101,40 +99,5 @@ router.get('/', function(req: Request, res: Response, next: NextFunction) {
     })
   })
 })
-
-
-
-
-// /* GET home page. */
-// router.get('/', function(req: Request, res: Response, next: NextFunction) {
-//   if (!BLOCK) {
-//     let webp_dir: string[] = get_webp();
-//     let multi_workflow_svg = "svg/multi_workflow.svg"
-//     let workflow_svg = "svg/workflow.svg"
-//     res.render('index', { 
-//       title: 'LivePaper',
-//       indexes: webp_dir,
-//       multi_workflow_svg: multi_workflow_svg,
-//       workflow_svg: workflow_svg
-//     });  
-//   } else {
-//     console.log("Compiling new research artefacts")
-//   }
-// });
-
-// /* POST home page */
-// router.post('/', function(req: Request, res: Response, next: NextFunction) {
-//   if (!BLOCK) {
-//     if (req.body.compute_dataset == 1) {
-//       runCalculation(res, req, req.body.compute_dataset).then(() => {delay(5000).then(() => {res.redirect('/')})})
-//     } else if (req.body.compute_dataset == 2) {
-//       runCalculation(res, req, req.body.compute_dataset).then(() => {delay(5000).then(() => {res.redirect('/')})})
-//     } else if (req.body.compute_dataset == 3) {
-//       runCalculation(res, req, req.body.compute_dataset).then(() => {delay(5000).then(() => {res.redirect('/')})})
-//     }
-//   } else {
-//     console.log("Compiling new research artefacts")
-//   } 
-// });
 
 module.exports = router;

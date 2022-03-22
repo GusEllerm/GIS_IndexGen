@@ -76,7 +76,7 @@ export function initialise_workflowDB (dataDir: string) {
     db.prepare('CREATE TABLE band (band_id INTEGER PRIMARY KEY AUTOINCREMENT, band_name varchar UNIQUE NOT NULL, band_short varchar NOT NULL, syslink varchar UNIQUE NOT NULL, resolution_id INTEGER NOT NULL, FOREIGN KEY(resolution_id) REFERENCES resolution)').run();
 
     // Add web related tables
-    db.prepare('Create TABLE web_interface (web_id INTEGER PRIMARY KEY AUTOINCREMENT, item_name VARCHAR NOT NULL, syslink VARCHAR NOT NULL, artefact_id INTEGER NOT NULL, type_id INTEGER NOT NULL, svg varchar UNIQUE, FOREIGN KEY(artefact_id) REFERENCES artefact, FOREIGN KEY(type_id) REFERENCES type)').run();
+    db.prepare('Create TABLE web_interface (web_id INTEGER PRIMARY KEY AUTOINCREMENT, item_name VARCHAR NOT NULL, short_name VARCHAR NOT NULL, syslink VARCHAR NOT NULL, artefact_id INTEGER NOT NULL, type_id INTEGER NOT NULL, svg varchar UNIQUE, FOREIGN KEY(artefact_id) REFERENCES artefact, FOREIGN KEY(type_id) REFERENCES type)').run();
 
     // Populate tables with static / known data
     populate_type(db);
@@ -421,13 +421,17 @@ export function compute_artefact(workflow: string, input: string) {
 }
 
 export function add_web_interface(db: any, type: string, artefactID: number|null, newname: string, syslink: string, svg: string|boolean = false) {
-    const insert_web_artefact = db.prepare('INSERT INTO web_interface (item_name, syslink, artefact_id, type_id) VALUES (@item_name, @syslink, @artefact_id, @type_id)');
-    const insert_web_artefact_svg = db.prepare('INSERT INTO web_interface (item_name, syslink, artefact_id, type_id, svg) VALUES (@item_name, @syslink, @artefact_id, @type_id, @svg)');
+    const insert_web_artefact = db.prepare('INSERT INTO web_interface (item_name, short_name, syslink, artefact_id, type_id) VALUES (@item_name, @short_name, @syslink, @artefact_id, @type_id)');
+    const insert_web_artefact_svg = db.prepare('INSERT INTO web_interface (item_name, short_name, syslink, artefact_id, type_id, svg) VALUES (@item_name, @short_name, @syslink, @artefact_id, @type_id, @svg)');
     const data_type: number = db.prepare('SELECT type_id FROM type WHERE type_name = ?').all(type)[0].type_id;
+
+    let short_name_array = newname.split('_');
+    let short_name = short_name_array.slice(-2)[0].concat("_", short_name_array.slice(-2)[1]);
 
     if (svg) {
         insert_web_artefact_svg.run({
             item_name: newname,
+            short_name: short_name,
             syslink: syslink,
             artefact_id: artefactID,
             type_id: data_type,
@@ -436,6 +440,7 @@ export function add_web_interface(db: any, type: string, artefactID: number|null
     } else {
         insert_web_artefact.run({
             item_name: newname,
+            short_name: short_name,
             syslink: syslink,
             artefact_id: artefactID,
             type_id: data_type
