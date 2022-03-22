@@ -2,6 +2,7 @@ import { initialise_workflowDB, add_input, compute_artefact, compute_web_interfa
 import { gen_full_workflow, gen_piecemeal_workflow } from "./Librarys/gen_yaml_lib";
 import { init_historicalDB, migrate_data } from "./Librarys/history_DB_lib"
 const exec = require('child_process').exec;
+const fs = require('fs')
 
 // assumes static workflow definitions
 // assumes artefact identity understood and defined by the author - e.g. they know they are generating x artefacts with names z,t,v
@@ -82,6 +83,29 @@ function compute_artefacts() {
     .then((result) => {
         compute_web_interface()
     }) 
+    .then((result) => {
+        set_open()
+    })
+}
+
+function set_busy(){
+    fs.writeFile('LP_status.txt', "1", (err: any) => {
+        if (err) {
+          console.error(err)
+          return
+        }
+        //file written successfully
+      })
+}
+
+function set_open(){
+    fs.writeFile('LP_status.txt', "0", (err: any) => {
+        if (err) {
+          console.error(err)
+          return
+        }
+        //file written successfully
+      })
 }
 
 export async function migrate(data: string) {
@@ -89,6 +113,8 @@ export async function migrate(data: string) {
     // TODO: add the ability to retain information on previous runs 
     // TODO: be able to migrate while still serving previous data untill new data is ready
     // compute_web_interface();
+
+    set_busy()
     await init_historicalDB();
     await migrate_data().then((response) => {
         console.log(response)
@@ -110,30 +136,6 @@ export async function migrate(data: string) {
             });
         })
     })
-    
-
- 
-
-    // historical_migration().then(result => {
-    //     console.log(result)
-    //     let child = exec('python Librarys/reset.py', (err: any, stdout: any, stderr: any) => {
-    //         if (err) {
-    //             console.log("ERROR")
-    //             console.log(err)
-    //             return
-    //         }
-    //         // console.log(stdout)
-    //     });
-        
-    //     child.on('exit', function() {
-    //         init_DB(data).then(result => {
-    //             console.log(result)
-    //             add_inputs();
-    //             compute_artefacts();
-    //             // compute_web_interface();
-    //         });
-    //     })
-    // })
 }
 
 

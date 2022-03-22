@@ -7,6 +7,9 @@ const path = require('path');
 
 const HISTORY_DB = path.join(__dirname, "../../LP_compilation/DB/history_DB.db")
 const WORKFLOW_DB = path.join(__dirname, "../../LP_compilation/DB/workflow_DB.db")
+const STATUS_FILE = path.join(__dirname, "../../LP_compilation/LP_status.txt")
+
+const fs = require('fs')
 
 interface current_artefacts {
     short_name: string,
@@ -63,6 +66,22 @@ function format_directory(directory: string|null) {
 
 /* GET users listing. */
 router.get('/', function(req: Request, res: Response, next: NextFunction) {
+
+
+      // check if LP is currently compiling
+    fs.readFile(STATUS_FILE, (err: any, status: string) => {
+        if (err) {
+        console.error(err)
+        return
+        }
+        if (status.toString() == "1") {
+            console.log("GOT THERE")
+            res.render('LP_compiling', {
+                title: "LivePaper V3"
+              })
+        } else {
+
+
     let final_set: historical_set[] = [];
     let historical_set: historical_set;
 
@@ -102,6 +121,13 @@ router.get('/', function(req: Request, res: Response, next: NextFunction) {
             historical_artefacts: final_set
         })   
     }
+
+
+}
+})
+
+
+
 });
 
 module.exports = router;

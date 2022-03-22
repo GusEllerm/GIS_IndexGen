@@ -3,8 +3,10 @@ const sqlite = require('better-sqlite3');
 const express = require('express');
 const router = express.Router();
 const path = require('path');
+const fs = require('fs')
 
 const WORKFLOW_DB = path.join(__dirname, "../../LP_compilation/DB/workflow_DB.db")
+const STATUS_FILE = path.join(__dirname, "../../LP_compilation/LP_status.txt")
 
 type Error = import('child_process').ExecException
 
@@ -15,6 +17,19 @@ function format_directory(directory: string|null) {
 }
 
 router.get('/', function(req: Request, res: Response, next: NextFunction) {
+
+      // check if LP is currently compiling
+  fs.readFile(STATUS_FILE, (err: any, status: string) => {
+    if (err) {
+      console.error(err)
+      return
+    }
+    if (status.toString() == "1") {
+      res.render('LP_compiling', {
+        title: "LivePaper V3"
+      })
+      return
+    } else {
 
   // define materials for presentation on website
   var total_artefacts: Artefact[]
@@ -98,6 +113,10 @@ router.get('/', function(req: Request, res: Response, next: NextFunction) {
       workflow_svg: format_directory(workflow_svg)
     })
   })
+
+}
+})
+
 })
 
 module.exports = router;
