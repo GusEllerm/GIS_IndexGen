@@ -3,7 +3,12 @@ extends layout
 
 block content
 
-  p Welcome to #{title}
+  div(class="history_titles")
+    div(class="current")
+      h1 Current Artefact 
+    div(class="history")
+      h1 Historical Artefacts
+
   for set in historical_artefacts
     div(class="artefact_history_item")
       div(class="current_artefact")
@@ -15,7 +20,7 @@ block content
             tr 
               td 
                 a(href=set.syslink)= set.short_name
-
+      
       div(class="historical_artefacts")
         for artefact in set.historical_versions 
           div(class="historic_artefact")

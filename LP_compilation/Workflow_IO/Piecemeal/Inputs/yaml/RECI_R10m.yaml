@@ -2,8 +2,8 @@ index: RECI
 bands:
   - class: File
     path: >-
-      /Users/eller/Projects/LivePaper-prototype/LP_compilation/Data_stages/tardis/Data/L2A_T59GMK_A034632_20220207T222543/R10m/T59GMK_20220207T222541_B04_10m.jp2
+      /Users/eller/Projects/LivePaper-prototype-backup/GIS_IndexGen/LP_compilation/Data_stages/tardis/Data/S2A_MSIL2A_20220620T223721_N0400_R072_T59GNL_20220621T013807/R10m/T59GNL_20220620T223721_B04_10m.jp2
   - class: File
     path: >-
-      /Users/eller/Projects/LivePaper-prototype/LP_compilation/Data_stages/tardis/Data/L2A_T59GMK_A034632_20220207T222543/R10m/T59GMK_20220207T222541_B08_10m.jp2
+      /Users/eller/Projects/LivePaper-prototype-backup/GIS_IndexGen/LP_compilation/Data_stages/tardis/Data/S2A_MSIL2A_20220620T223721_N0400_R072_T59GNL_20220621T013807/R10m/T59GNL_20220620T223721_B08_10m.jp2
 color: RdYlGn

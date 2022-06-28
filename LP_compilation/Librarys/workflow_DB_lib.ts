@@ -403,6 +403,7 @@ export function compute_artefact(workflow: string, input: string) {
 
                     console.log("\n - moving files to permanent directory - \n");
                     let newpath: string = directories.tif;
+
                     exec('mv ' + tiff.path + " " + newpath);
                     add_artefact(db, tiff, generate_svg(path.parse(tiff.basename).name), workflow, input, newpath);
 
@@ -469,6 +470,8 @@ function gen_zip(artefact: Artefact, db: any) {
     const data_objects: DB_artefact[] = db.prepare('SELECT item_name, web_interface.type_id, web_interface.syslink, web_interface.svg, artefact.workflow_id, artefact.input_id FROM web_interface LEFT JOIN artefact ON web_interface.artefact_id = artefact.artefact_id WHERE workflow_id = 2 AND web_interface.type_id = 3 AND input_id = ?').all(artefact.input_id)
     let file_paths: string[] = []
     data_objects.forEach(artefact => {
+        console.log(artefact)
+        console.log(artefact.syslink)
         archive.file(artefact.syslink, { name: artefact.item_name })
         file_paths.push(artefact.syslink)
     });

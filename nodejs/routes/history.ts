@@ -110,7 +110,7 @@ router.get('/', function(req: Request, res: Response, next: NextFunction) {
             let historical_set: historical_set = ({
                 short_name: artefact.short_name,
                 syslink: format_directory(artefact.syslink),
-                historical_versions: artefact_history
+                historical_versions: artefact_history.reverse()
             })
             final_set.push(historical_set)
         })
@@ -121,8 +121,6 @@ router.get('/', function(req: Request, res: Response, next: NextFunction) {
             historical_artefacts: final_set
         })   
     }
-
-
 }
 })
 

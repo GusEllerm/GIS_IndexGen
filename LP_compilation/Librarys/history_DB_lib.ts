@@ -102,6 +102,7 @@ export function migrate_data() {
         // If not we are in the hard restart state
         if (!fs.existsSync(WORKFLOW_DB)) {
             resolve('No migration avaliable as the workflow_DB is not initalized')
+            return "No migration"
         }
         // Migrate webp images to history_DB
         const history_db = new sqlite(HISTORY_DB, { verbose: console.log, fileMustExist: true });
