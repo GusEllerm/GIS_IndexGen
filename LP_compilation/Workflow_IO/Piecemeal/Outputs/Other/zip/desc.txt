@@ -1,0 +1,1 @@
+Stores pickles of a single workflow run as a compressed version. 

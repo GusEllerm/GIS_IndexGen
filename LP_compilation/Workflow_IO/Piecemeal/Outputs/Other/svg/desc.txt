@@ -1,0 +1,1 @@
+Stores SVGs of individual workflow runs

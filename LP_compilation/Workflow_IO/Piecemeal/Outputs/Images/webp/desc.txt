@@ -1,0 +1,1 @@
+Stores webp versions of the Tiff primary outputs for ease of integration with web mediums. 
