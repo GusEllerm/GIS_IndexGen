@@ -7,7 +7,7 @@ from pathlib import Path
 
 from ruamel.yaml import YAML
 
-VERSION = "1.0.1"
+VERSION = "1.0.2"
 ORCID_URL = "https://orcid.org/0000-0001-8260-231X"
 ORCID_BARE = "0000-0001-8260-231X"
 

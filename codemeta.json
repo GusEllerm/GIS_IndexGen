@@ -5,7 +5,7 @@
   "description": "CWL workflows and Python scripts to compute vegetation indices (NDVI, RECI, NDRE, GNDVI) from multispectral band inputs and render GeoTIFF outputs, with an optional Node.js web viewer.",
   "codeRepository": "https://github.com/GusEllerm/GIS_IndexGen",
   "license": "https://www.apache.org/licenses/LICENSE-2.0",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "identifier": "https://doi.org/10.5281/zenodo.18254360",
   "author": [
     {
