@@ -20,6 +20,7 @@ LICENSE = "https://www.apache.org/licenses/LICENSE-2.0"
 SOFTWARE_ID = "#software"
 ORCID = "https://orcid.org/0000-0001-8260-231X"
 CREATOR_NAME = "Augustus Ellerm"
+DOI_URL = "https://doi.org/10.5281/zenodo.18254360"
 
 KEY_PATHS = [
     "README.md",
@@ -77,6 +78,7 @@ def main() -> None:
     root_dataset["description"] = DESCRIPTION
     root_dataset["license"] = LICENSE
     root_dataset["version"] = VERSION
+    root_dataset["identifier"] = DOI_URL
 
     creator = crate.add(
         Person(
@@ -99,6 +101,7 @@ def main() -> None:
                 "description": DESCRIPTION,
                 "codeRepository": REPO_URL,
                 "license": LICENSE,
+                "identifier": DOI_URL,
                 "version": VERSION,
             },
         )

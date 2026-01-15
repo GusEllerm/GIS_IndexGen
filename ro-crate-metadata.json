@@ -7,7 +7,7 @@
             "creator": {
                 "@id": "https://orcid.org/0000-0001-8260-231X"
             },
-            "datePublished": "2026-01-15T08:45:14+00:00",
+            "datePublished": "2026-01-15T08:50:00+00:00",
             "description": "CWL workflows and Python scripts to compute vegetation indices (NDVI, RECI, NDRE, GNDVI) from multispectral band inputs and render GeoTIFF outputs, with an optional Node.js web viewer.",
             "hasPart": [
                 {
@@ -110,6 +110,7 @@
                     "@id": "scripts/validate_metadata.py"
                 }
             ],
+            "identifier": "https://doi.org/10.5281/zenodo.18254360",
             "license": "https://www.apache.org/licenses/LICENSE-2.0",
             "mainEntity": {
                 "@id": "#software"
@@ -137,6 +138,7 @@
             "@type": "SoftwareSourceCode",
             "codeRepository": "https://github.com/GusEllerm/GIS_IndexGen",
             "description": "CWL workflows and Python scripts to compute vegetation indices (NDVI, RECI, NDRE, GNDVI) from multispectral band inputs and render GeoTIFF outputs, with an optional Node.js web viewer.",
+            "identifier": "https://doi.org/10.5281/zenodo.18254360",
             "license": "https://www.apache.org/licenses/LICENSE-2.0",
             "name": "GIS IndexGen (Technical Investigation)",
             "version": "1.0.1"
