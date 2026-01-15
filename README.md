@@ -1,81 +1,73 @@
-# Project topology
+# GIS IndexGen (Chapter 3 Technical Investigation)
+This repository is the computational workflow artefact used in Chapter 3 of the PhD thesis (Technical Investigation). It implements a CWL-orchestrated pipeline that computes vegetation indices from multispectral imagery using Python band-math scripts. The workflow produces index matrices (pickle files) and can render GeoTIFF visualizations. The code here is designed to integrate with a broader LivePublication prototype described in Chapter 3, but only the compute workflow itself lives in this repo. Repository status: research prototype; the workflow is functional, while the optional web viewer is not production-ready.
 
-For this example CWL works as the computational engine, running the workflow and generating the tiff outputs. 
-Nodejs is used to publish these results as a webpage. 
-CWL_output contains workflow outputs, CWL contains the cwl code to execute workflows and the python scripts that actually do the computation. 
+## What this repository does
+- Orchestrates index generation with Common Workflow Language in `CWL/Workflows/`.
+- Uses Python band-math scripts in `CWL/Workflows/Modules/Scripts/` to calculate NDVI, RECI, NDRE, and GNDVI.
+- Writes index matrices to disk as `.pickle` files (cached to avoid recomputation).
+- Generates GeoTIFF images from index matrices via `tiff_gen.py`.
 
-To run the webserver install the npm dependencies (`npm install`) and run npm start from top directory. Current webserver is listening on port 3000.
+## How it fits into the Chapter 3 LivePublication prototype
+Upstream data (Sentinel-2 Level-2A products discovered via OpenSearch and sourced from Copernicus) is referenced by the CWL input YAMLs but is not produced here. Downstream, Chapter 3 describes rendering workflow outputs into a live publication container (HTML/JS with Pug templates and SQLite for run history). This repository provides the compute component intended to plug into that larger system, rather than implementing the full publication stack.
 
-# Running examples
+## Inputs
+- CWL input YAMLs under `CWL/Workflow_inputs/` (for example `NDVI_10m.yaml`, `NDVI_20m.yaml`, `multi_workflow.yaml`).
+- Each YAML lists `File` inputs with absolute paths into a Sentinel-2 Level-2A `.SAFE` directory structure (JP2 band files such as `.../IMG_DATA/R10m/..._B04_10m.jp2`).
+- Optional color map name (e.g., `RdYlGn`) for TIFF rendering.
+- `CWL/Workflow_inputs/Data/` contains supporting data files (e.g., `NZ.geojson`) and a helper script (`getData.py`).
+- TODO: confirm which exact band combinations and resolutions are required for each workflow YAML and document them here.
 
-To run examples you will need to install the dependencies in requirements.txt in your local env. 
-testCL.txt contains example executions of the index workflows. Use these, or your own data to produce outputs. 
+## Outputs
+- Band matrices and index matrices are written as `.pickle` files in the working directory.
+  - Output naming is derived from the first band filename: the third underscore-separated token is replaced with the index name (see `gen_output_name()` in `index_def.py`).
+- GeoTIFF images are written alongside the pickle outputs with the same base name and a `.tif` extension.
+- TODO: confirm whether CWL outputs are redirected to a specific `CWL_output` directory in actual runs (not present in this repo).
 
-Using pipenv is encouraged as it is easy to install all required dependencies from the Pipfile. 
+## Quickstart (local run)
+Create and activate a virtual environment, install requirements, then run a CWL workflow:
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
 
-Graphviz will need to be installed. 
+# Run a single-index workflow (update YAML paths to your local Sentinel-2 data)
+cwltool CWL/Workflows/Modules/index_def.cwl CWL/Workflow_inputs/NDVI_10m.yaml
+```
 
-# TODO
+Run the full workflow:
+```bash
+# Update paths inside CWL/Workflow_inputs/multi_workflow.yaml first
+cwltool CWL/Workflows/multi_workflow.cwl CWL/Workflow_inputs/multi_workflow.yaml
+```
 
-Currently, the webserver is not ready for deployment however the CWL is reasonably complete. 
+TODO: provide a small, portable example input dataset or a minimal template YAML in-repo.
 
-# Example index matrix calculations
+## Workflow overview
+- `CWL/Workflows/Modules/index_def.cwl` calls `index_def.py` to compute index matrices from band files.
+- `CWL/Workflows/Modules/tiff_gen.cwl` calls `tiff_gen.py` to render GeoTIFFs from index pickles.
+- `CWL/Workflows/workflow.cwl` and `CWL/Workflows/multi_workflow.cwl` compose the modules into single- and multi-index workflows.
+- Example input files for these workflows are under `CWL/Workflow_inputs/`.
 
-Assuming you are using pipenv, you can enter the venv using `pipenv shell`
-Currently, only four indexes are implemented:
-- NDVI
-- RECI
-- NDRE
-- GNDVI
+## Reproducibility notes
+- Python dependencies are pinned in `Pipfile` and `requirements.txt` (Python 3.9 per `Pipfile`).
+- Node dependencies (for the optional web viewer) are pinned in `nodejs/package-lock.json`.
+- The index computation caches band and index matrices by filename; existing `.pickle` files skip recomputation unless `--force_recompute` is used.
+- Chapter 3 describes running the CWL reference runner (`cwltool`) on scalable compute (e.g., Nectar cloud); this repo does not contain deployment scripts.
+- Sentinel-2 Level-2A data is not included; inputs must be prepared externally.
 
-## Executing python scripts without CWL wrapper
-### index_def.py script -- generates both the pickle files from the data source (band matrix's) and the index pickle file (index matrix)
+## How to cite
+Zenodo DOI: (minted after release)  
+GitHub: https://github.com/GusEllerm/GIS_IndexGen  
+Also see `CITATION.cff` for citation metadata.
 
-`python3 CWL/Workflows/Modules/Scripts/index_def.py -i [name of index e.g. NDVI] -b [list of input bands space seperated]`
+## License
+Apache-2.0. See `LICENSE`.
 
-e.g. 
-
-`python3 CWL/Workflows/Modules/Scripts/index_def.py -i NDVI -b ~/Projects/LivePaper-prototype/CWL/Workflow_inputs/Data/S2A_MSIL2A_20220207T222541_N0400_R029_T59GMK_20220208T001202.SAFE/GRANULE/L2A_T59GMK_A034632_20220207T222543/IMG_DATA/R20m/T59GMK_20220207T222541_B04_20m.jp2 ~/Projects/LivePaper-prototype/CWL/Workflow_inputs/Data/S2A_MSIL2A_20220207T222541_N0400_R029_T59GMK_20220208T001202.SAFE/GRANULE/L2A_T59GMK_A034632_20220207T222543/IMG_DATA/R20m/T59GMK_20220207T222541_B8A_20m.jp2`
-
-### tiff_gen.py script -- generates a tiff image from an index matrix
-
-`python3 CWL/Workflows/Modules/Scripts/tiff_gen.py -i [index matrix] -c [color map]`
-
-e.g.
-
-`python3 CWL/WOrkflows/Modules/Scripts/tiff_gen.py -i ~/Projects/LivePaper-prototype/T59GMK_20220207T222541_NDVI_20m.pickle -c RdYlGn`
-
-A list of available colors can be found [here] (https://matplotlib.org/stable/tutorials/colors/colormaps.html)
-
-## Executing workflows with CWL wrappers
-
-Assuming you have a reference cwl-runner installed (included within dependencies) you should be able to access cwl-runner from your venv. 
-
-### Running single Modules
-
-The CWL is structured such that every workflow is built from two modules:
-- index_def.cwl
-- tiff_gen.cwl
-
-These modules can be run independently, or as a workflow. 
-
-To run the entire workflow:
-
-`cwl-runner CWL/Workflows/multi_workflow.cwl CWL/Workflow_inputs/multi_workflow.yaml`
-
-This will produce a tiff image for all four index's, as well as versions for each resolution possible (r10m, r20m)
-
-
-# Notes
-
-Assuming the issue of identity is solved by the researcher knowing what artefacts are generated by their workflow. 
-For this example workflow seven artefacts are assumed to be generated on workflow completion. 
-- GNDVI 10m tiff
-- GNDVI 20m tiff
-- NDRE 20m tiff
-- NDVI 10m tiff
-- NDVI 20m tiff
-- RECI 10m tiff
-- RECI 20m tiff
-
-Supplimentary data is provided on piecemeal processing of each tiff. 
+Maintainer checklist (before Zenodo deposit):
+- Verify the quickstart commands still run with current dependencies.
+- Replace absolute paths in `CWL/Workflow_inputs/*.yaml` with local data paths.
+- Confirm the input data description and band/resolution requirements in this README.
+- Confirm output naming and locations match your workflow runs.
+- Confirm the Chapter 3 narrative references match the thesis text.
+- Ensure the license is correct for this repository.
+- Tag a release and archive to Zenodo after checks pass.
