@@ -141,10 +141,19 @@ def main() -> None:
     if len({citation_title, codemeta_name, zenodo_title, rocrate_name}) != 1:
         errors.append("Title mismatch across CITATION, CodeMeta, Zenodo, or RO-Crate")
 
-    citation_license = citation.get("license")
-    codemeta_license = codemeta.get("license")
-    zenodo_license = zenodo.get("license")
-    rocrate_license = dataset.get("license")
+    def normalize_license(value: str | None) -> str | None:
+        if not value:
+            return value
+        if value.lower() in {"apache-2.0", "apache 2.0"}:
+            return "apache-2.0"
+        if value in {"https://www.apache.org/licenses/LICENSE-2.0"}:
+            return "apache-2.0"
+        return value.lower()
+
+    citation_license = normalize_license(citation.get("license"))
+    codemeta_license = normalize_license(codemeta.get("license"))
+    zenodo_license = normalize_license(zenodo.get("license"))
+    rocrate_license = normalize_license(dataset.get("license"))
     if len({citation_license, codemeta_license, zenodo_license, rocrate_license}) != 1:
         errors.append("License mismatch across CITATION, CodeMeta, Zenodo, or RO-Crate")
 

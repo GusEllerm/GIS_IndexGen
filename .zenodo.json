@@ -9,7 +9,7 @@
       "orcid": "https://orcid.org/0000-0001-8260-231X"
     }
   ],
-  "license": "https://www.apache.org/licenses/LICENSE-2.0",
+  "license": "Apache-2.0",
   "keywords": [
     "GIS",
     "vegetation index",
