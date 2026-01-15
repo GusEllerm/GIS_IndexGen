@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "GIS IndexGen (Technical Investigation)"
+abstract: "CWL workflows and Python scripts to compute vegetation indices (e.g., NDVI, RECI, NDRE, GNDVI) from multispectral band inputs, producing analysis-ready outputs for downstream visualisation and publication; includes an optional Node.js viewer when configured."
+version: "1.0.0"
+license: "https://www.apache.org/licenses/LICENSE-2.0"
+repository-code: "https://github.com/GusEllerm/GIS_IndexGen"
+url: "https://github.com/GusEllerm/GIS_IndexGen"
+authors:
+  - family-names: Ellerm
+    given-names: Augustus
+    orcid: "https://orcid.org/0000-0001-8260-231X"
+preferred-citation:
+  type: software
+  title: "GIS IndexGen (Technical Investigation)"
+  authors:
+    - family-names: Ellerm
+      given-names: Augustus
+      orcid: "https://orcid.org/0000-0001-8260-231X"
+  version: "1.0.0"
+  url: "https://github.com/GusEllerm/GIS_IndexGen"
+
