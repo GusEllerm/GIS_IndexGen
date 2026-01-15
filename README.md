@@ -1,4 +1,4 @@
-# GIS IndexGen (Chapter 3 Technical Investigation) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18254360.svg)](https://doi.org/10.5281/zenodo.18254360)
+# GIS IndexGen (Chapter 3 Technical Investigation) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18254406.svg)](https://doi.org/10.5281/zenodo.18254406)
 
 
 This repository is the computational workflow artefact used in Chapter 3 (Technical Investigation). It implements a CWL-orchestrated pipeline that computes vegetation indices from multispectral imagery using Python band-math scripts. The workflow produces index matrices and can render GeoTIFF visualizations. In addition to the compute pipeline, this repo also includes the LivePublication integration components under `LP_compilation/` (HTML/JS + Pug templating, plus SQLite history handling).
