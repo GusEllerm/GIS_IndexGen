@@ -3,7 +3,6 @@
   "description": "CWL workflows and Python scripts to compute vegetation indices (NDVI, RECI, NDRE, GNDVI) from multispectral band inputs and render GeoTIFF outputs, with an optional Node.js web viewer.",
   "upload_type": "software",
   "version": "1.0.0",
-  "access_right": "open",
   "creators": [
     {
       "name": "Ellerm, Augustus",
