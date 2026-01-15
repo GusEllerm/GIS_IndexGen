@@ -17,12 +17,5 @@
     "CWL",
     "workflow",
     "technical investigation"
-  ],
-  "related_identifiers": [
-    {
-      "identifier": "https://github.com/GusEllerm/GIS_IndexGen",
-      "relation": "isSupplementTo",
-      "resource_type": "software"
-    }
   ]
 }
