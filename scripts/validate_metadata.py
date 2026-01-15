@@ -8,7 +8,8 @@ from pathlib import Path
 from ruamel.yaml import YAML
 
 VERSION = "1.0.0"
-ORCID = "https://orcid.org/0000-0001-8260-231X"
+ORCID_URL = "https://orcid.org/0000-0001-8260-231X"
+ORCID_BARE = "0000-0001-8260-231X"
 
 REQUIRED_FILES = [
     "README.md",
@@ -131,8 +132,8 @@ def main() -> None:
 
     zenodo_creators = zenodo.get("creators", [])
     zenodo_orcids = {creator.get("orcid") for creator in zenodo_creators}
-    if ORCID not in zenodo_orcids:
-        errors.append("Zenodo ORCID is missing or not full URL form")
+    if not (ORCID_URL in zenodo_orcids or ORCID_BARE in zenodo_orcids):
+        errors.append("Zenodo ORCID is missing or not in a recognized form")
 
     citation_title = citation.get("title")
     codemeta_name = codemeta.get("name")
@@ -166,7 +167,7 @@ def main() -> None:
         codemeta_orcid = codemeta["author"][0].get("@id")
     creator = dataset.get("creator")
     rocrate_orcid = creator.get("@id") if isinstance(creator, dict) else None
-    if len({citation_orcid, codemeta_orcid, rocrate_orcid, ORCID}) != 1:
+    if len({citation_orcid, codemeta_orcid, rocrate_orcid, ORCID_URL}) != 1:
         errors.append("ORCID mismatch across CITATION, CodeMeta, or RO-Crate")
 
     _report(errors)

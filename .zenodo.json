@@ -20,6 +20,7 @@
   "related_identifiers": [
     {
       "identifier": "https://github.com/GusEllerm/GIS_IndexGen",
+      "scheme": "url",
       "relation": "isSupplementTo",
       "resource_type": "software"
     }
