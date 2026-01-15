@@ -6,24 +6,16 @@
   "creators": [
     {
       "name": "Ellerm, Augustus",
-      "orcid": "https://orcid.org/0000-0001-8260-231X"
+      "orcid": "0000-0001-8260-231X"
     }
   ],
   "license": "Apache-2.0",
-  "keywords": [
-    "GIS",
-    "vegetation index",
-    "CWL",
-    "workflow",
-    "technical investigation"
-  ],
+  "keywords": ["GIS", "vegetation index", "CWL", "workflow", "technical investigation"],
   "related_identifiers": [
     {
       "identifier": "https://github.com/GusEllerm/GIS_IndexGen",
-      "scheme": "url",
       "relation": "isSupplementTo",
       "resource_type": "software"
     }
   ]
 }
-
