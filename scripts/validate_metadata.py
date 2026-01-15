@@ -7,7 +7,7 @@ from pathlib import Path
 
 from ruamel.yaml import YAML
 
-VERSION = "1.0.0"
+VERSION = "1.0.1"
 ORCID_URL = "https://orcid.org/0000-0001-8260-231X"
 ORCID_BARE = "0000-0001-8260-231X"
 
@@ -56,11 +56,11 @@ def main() -> None:
     rocrate = load_json(repo_root / "ro-crate-metadata.json")
 
     if citation.get("version") != VERSION:
-        errors.append("CITATION.cff version is not 1.0.0")
+        errors.append(f"CITATION.cff version is not {VERSION}")
     if codemeta.get("version") != VERSION:
-        errors.append("codemeta.json version is not 1.0.0")
+        errors.append(f"codemeta.json version is not {VERSION}")
     if zenodo.get("version") != VERSION:
-        errors.append(".zenodo.json version is not 1.0.0")
+        errors.append(f".zenodo.json version is not {VERSION}")
 
     graph = rocrate.get("@graph", [])
     dataset = next((item for item in graph if item.get("@id") == "./"), None)
@@ -70,7 +70,7 @@ def main() -> None:
         sys.exit(1)
 
     if dataset.get("version") != VERSION:
-        errors.append("RO-Crate root dataset version is not 1.0.0")
+        errors.append(f"RO-Crate root dataset version is not {VERSION}")
 
     main_entity_ref = dataset.get("mainEntity")
     if isinstance(main_entity_ref, list):
@@ -86,7 +86,7 @@ def main() -> None:
     if not main_entity:
         errors.append("RO-Crate mainEntity is missing or unresolved")
     elif main_entity.get("version") != VERSION:
-        errors.append("RO-Crate mainEntity version is not 1.0.0")
+        errors.append(f"RO-Crate mainEntity version is not {VERSION}")
 
     metadata_descriptor = next(
         (item for item in graph if item.get("@id") == "ro-crate-metadata.json"),

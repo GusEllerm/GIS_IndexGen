@@ -8,7 +8,7 @@ from rocrate.model.contextentity import ContextEntity
 from rocrate.model.person import Person
 from rocrate.rocrate import ROCrate
 
-VERSION = "1.0.0"
+VERSION = "1.0.1"
 TITLE = "GIS IndexGen (Technical Investigation)"
 DESCRIPTION = (
     "CWL workflows and Python scripts to compute vegetation indices "

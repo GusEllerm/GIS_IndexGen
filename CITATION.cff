@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 title: "GIS IndexGen (Technical Investigation)"
-version: "1.0.0"
+version: "1.0.1"
 type: software
 license: "Apache-2.0"
 abstract: "CWL workflows and Python scripts to compute vegetation indices (NDVI, RECI, NDRE, GNDVI) from multispectral band inputs and produce analysis-ready outputs; includes an optional Node.js viewer when configured."
